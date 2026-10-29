@@ -3,186 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Absahnaz Care Foundation - Portal V3.3 Full KYC</title>
+<title>Absahnaz Care Foundation - V3.6 Expense</title>
 <style>
-body{font-family:system-ui,-apple-system;background:#f8fafc;padding:12px;margin:0}
-.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,0.06);border:1px solid #eef2f7}
-h2{text-align:center;margin:8px 0 4px}
-h3{margin:6px 0 12px;font-size:19px}
-label{font-weight:700;font-size:14px;margin-top:10px;display:block;color:#1e293b}
-.req:after{content:" *";color:red}
-.opt:after{content:" (Optional)";color:#64748b;font-weight:400;font-size:12px}
-input,select{width:100%;padding:12px;border-radius:11px;border:1.8px solid #e2e8f0;margin:6px 0 10px;font-size:16px;box-sizing:border-box;background:#fcfdff}
-input:focus,select:focus{border-color:#f59e0b;outline:none}
-button{background:#f59e0b;color:#000;border:none;padding:15px;width:100%;border-radius:13px;font-weight:800;font-size:16px;margin-top:10px;cursor:pointer}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.5;padding:12px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:18px;margin:14px 0;border:1px solid #e2e8f0}
+h1{font-size:20px;text-align:center}
+.small{font-size:11px;color:#64748b;text-align:center;margin-bottom:10px}
+h2{font-size:15px;margin-bottom:10px}
+label{font-size:12px;font-weight:600;display:block;margin:6px 0 3px}
+input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #cbd5e1;background:#f8fafc;font-size:14px}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;background:#f59e0b;color:#000;font-weight:800;font-size:14px;cursor:pointer;margin-top:12px}
+.btn-green{background:#16a34a;color:#fff}
+.btn-black{background:#0f172a;color:#fff}
+.list{font-size:11px;margin-top:10px;background:#f8fafc;padding:8px;border-radius:8px;max-height:350px;overflow:auto}
+.item{padding:8px;border-bottom:1px dashed #e2e8f0;display:flex;justify-content:space-between;gap:8px}
+.badge{font-size:10px;background:#fef3c7;padding:2px 6px;border-radius:20px;display:inline-block;margin-top:3px}
+.summary{background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:14px;margin-top:14px;font-size:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.small{font-size:12px;color:#64748b}
+.act{padding:5px 9px;border-radius:8px;border:none;font-size:11px;font-weight:700;cursor:pointer}
+.del{background:#fee2e2;color:#b91c1c}
+.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.kpi div{background:#fff;border-radius:10px;padding:10px;text-align:center;border:1px solid #e2e8f0}
+.kpi b{font-size:16px;display:block}
 </style>
 </head>
 <body>
-<h2>Absahnaz Care Foundation<br><span style="font-size:13px;color:#64748b">Portal V3.3 - Full KYC - Damaturu, Yobe</span></h2>
+<div class="card">
+<h1>Absahnaz Care Foundation</h1>
+<div class="small">Portal V3.6 - With Beneficiary Expense Tracker - Damaturu, Yobe</div>
+<h2>1. Register Student - With LGA/Ward</h2>
+<label>Full Name *</label><input id="s_name" placeholder="Musa Ali">
+<div class="grid2">
+<div><label>Category *</label><select id="s_cat"><option>Almajiri</option><option>Orphan</option><option>Out-of-School</option><option>IDP</option></select></div>
+<div><label>State *</label><select id="s_state"><option>Yobe State</option><option>Borno State</option></select></div>
+</div>
+<div class="grid2">
+<div><label>LGA *</label><select id="s_lga"><option>Damaturu LGA</option><option>Potiskum LGA</option><option>Maiduguri LGA</option></select></div>
+<div><label>Ward *</label><input id="s_ward" placeholder="Maisandari Ward"></div>
+</div>
+<label>Phone *</label><input id="s_phone" placeholder="080...">
+<div class="grid2">
+<div><label>NIN (Optional)</label><input id="s_nin" placeholder="11-digit"></div>
+<div><label>House (Optional)</label><input id="s_house" placeholder="No 12"></div>
+</div>
+<label>Postal (Optional)</label><input id="s_postal" value="620001">
+<input id="s_id_preview" disabled style="margin-top:8px" placeholder="ACF/YB/2026/ - Preview">
+<button class="btn" onclick="registerStudent()">Register Student ACF/YB/2026/...</button>
+<div id="s_list" class="list">No students</div>
+</div>
 
 <div class="card">
-<h3>1. Register Student - With LGA/Ward</h3>
-<label class="req">Full Name</label>
-<input id="sName" placeholder="Musa Ali">
-<label class="req">Student Category</label>
-<select id="sCat">
-<option>Almajiri</option><option>Out-of-School Children</option><option>Orphans</option><option>IDP Children</option><option>Hawkers</option><option>Less Privileged</option>
+<h2>2. Quick Add Member</h2>
+<label>Full Name *</label><input id="m_name" placeholder="Abba Ali">
+<div class="grid2">
+<div><label>Role *</label><select id="m_role"><option>Volunteer</option><option>Member</option><option>Staff</option></select></div>
+<div><label>LGA *</label><select id="m_lga"><option>Damaturu LGA</option><option>Maiduguri LGA</option></select></div>
+</div>
+<label>Phone *</label><input id="m_phone" placeholder="080...">
+<button class="btn" onclick="registerMember()">Register State Member</button>
+<div id="m_list" class="list">No members</div>
+</div>
+
+<div class="card">
+<h2>3. Record Donation - Books / Uniform / Fees</h2>
+<label>Donor Name *</label><input id="d_name" placeholder="Donor Name">
+<label>Amount ₦ *</label><input id="d_amount" type="number" placeholder="1000">
+<label>Purpose *</label><select id="d_purpose"><option>General Fund - All</option><option>Books Fund</option><option>Uniform Fund</option><option>School Fees Fund</option></select>
+<button class="btn" onclick="recordDonation()">Record Donation</button>
+<div id="d_list" class="list">No donations</div>
+</div>
+
+<div class="card" style="border:2px solid #16a34a">
+<h2>4. NEW: Record Money Used For Each Beneficiary 💰</h2>
+<label>Select Beneficiary (Student) *</label>
+<select id="e_student"></select>
+<div class="grid2">
+<div><label>Amount Used ₦ *</label><input id="e_amount" type="number" placeholder="e.g. 5000 for uniform"></div>
+<div><label>Date Used *</label><input id="e_date" type="date"></div>
+</div>
+<label>Used For What? *</label>
+<select id="e_purpose">
+<option>Uniform</option>
+<option>Books / Writing Materials</option>
+<option>School Fees</option>
+<option>Feeding</option>
+<option>Transport</option>
+<option>Medical / Health</option>
+<option>Shelter / Mat</option>
+<option>Other</option>
 </select>
-<div class="grid2">
-<div><label class="req">State</label>
-<select id="sState" onchange="updateLGA('s')">
-<option value="Yobe State">Yobe State</option><option value="Borno State">Borno State</option><option value="Bauchi State">Bauchi State</option><option value="Gombe State">Gombe State</option><option value="Adamawa State">Adamawa State</option><option value="Jigawa State">Jigawa State</option>
-</select></div>
-<div><label class="req">LGA</label><select id="sLGA"></select></div>
+<label>Description / Receipt Note (Optional)</label>
+<textarea id="e_note" rows="2" placeholder="e.g. Bought 2 uniforms for Musa at Damaturu market, receipt No 123"></textarea>
+<button class="btn btn-green" onclick="recordExpense()">💰 Record Expense For Beneficiary</button>
+<div id="e_list" class="list">No expenses yet</div>
+<div class="kpi">
+<div><b id="kpi_don">₦0</b><span style="font-size:10px">Total Donations</span></div>
+<div><b id="kpi_exp">₦0</b><span style="font-size:10px">Total Used</span></div>
+<div><b id="kpi_bal">₦0</b><span style="font-size:10px">Balance</span></div>
 </div>
-<div class="grid2">
-<div><label class="req">Ward</label><input id="sWard" placeholder="Maisandari Ward"></div>
-<div><label class="req">Phone Number</label><input id="sPhone" placeholder="0803..."></div>
-</div>
-<div class="grid2">
-<div><label class="opt">NIN Number</label><input id="sNIN" maxlength="11" placeholder="11-digit NIN"></div>
-<div><label class="opt">House Number</label><input id="sHouse" placeholder="No 12, ..."></div>
-</div>
-<label class="opt">Postal Code</label><input id="sPostal" placeholder="620001">
-<label>Auto ID (ACF/YB/Format)</label><input id="sIDPreview" disabled>
-<button onclick="addStudent()">Register Student ACF/YB/2026/...</button>
-<div id="sList" class="small" style="margin-top:10px"></div>
 </div>
 
 <div class="card">
-<h3>2. Quick Add Member - Volunteers, Members, Staff</h3>
-<label class="req">Full Name</label><input id="mName" placeholder="Abba Ali">
-<div class="grid2">
-<div><label class="req">Role</label><select id="mRole"><option>Volunteer</option><option>Member</option><option>Staff</option><option>Coordinator</option></select></div>
-<div><label class="req">State</label><select id="mState" onchange="updateLGA('m')"><option value="Yobe State">Yobe State</option><option value="Borno State">Borno State</option><option value="Bauchi State">Bauchi State</option><option value="Gombe State">Gombe State</option><option value="Adamawa State">Adamawa State</option><option value="Jigawa State">Jigawa State</option></select></div>
-</div>
-<div class="grid2"><div><label class="req">LGA</label><select id="mLGA"></select></div><div><label class="req">Ward</label><input id="mWard" placeholder="Gwange Ward"></div></div>
-<label class="req">Phone Number</label><input id="mPhone" placeholder="080...">
-<div class="grid2"><div><label class="opt">NIN Number</label><input id="mNIN" maxlength="11" placeholder="Optional"></div><div><label class="opt">House Number</label><input id="mHouse" placeholder="Optional"></div></div>
-<label class="opt">Postal Code</label><input id="mPostal" placeholder="620001">
-<button onclick="addMember()">Register State Member</button>
-<div id="mList" class="small" style="margin-top:10px"></div>
-</div>
-
-<div class="card">
-<h3>3. Record Donation - Books / Uniform / Fees</h3>
-<label class="req">Donor Name</label><input id="dName" placeholder="Donor or Staff Name">
-<div class="grid2">
-<div><label class="req">Phone</label><input id="dPhone" placeholder="080..."></div>
-<div><label class="req">State</label><select id="dState" onchange="updateLGA('d')"><option value="Yobe State">Yobe State</option><option value="Borno State">Borno State</option><option value="Lagos State">Lagos State</option><option value="FCT Abuja">FCT Abuja</option></select></div>
-</div>
-<div class="grid2"><div><label class="req">LGA</label><select id="dLGA"></select></div><div><label class="req">Ward</label><input id="dWard" placeholder="Ward"></div></div>
-<label class="req">Amount ₦</label><input id="dAmount" type="number" placeholder="1000">
-<label class="req">Purpose / Fund Type</label>
-<select id="dPurpose"><option value="General Fund - All">General Fund - All</option><option value="Books Fund">Books Fund - For Books</option><option value="Uniform Fund">Uniform Fund - For Uniform</option><option value="School Fees Fund">School Fees Fund - For School Fees</option><option value="Feeding Fund">Feeding Fund</option></select>
-<label class="req">For Student Category</label>
-<select id="dForCat"><option value="All - Almajiri, Out-of-School, Orphans, IDP">All - Almajiri, Out-of-School, Orphans, IDP</option><option>Almajiri</option><option>Out-of-School Children</option><option>Orphans</option><option>IDP Children</option><option>Hawkers</option></select>
-<div class="grid2"><div><label class="opt">NIN Number</label><input id="dNIN" placeholder="Optional"></div><div><label class="opt">House Number</label><input id="dHouse" placeholder="Optional"></div></div>
-<label class="opt">Postal Code</label><input id="dPostal" placeholder="Optional">
-<button onclick="addDonation()">Record Donation</button>
-<div id="dList" class="small" style="margin-top:10px"></div>
-</div>
-
-<div class="card" style="background:#fffbeb">
-<h3>Summary Report</h3>
-<div id="report"></div>
-<button onclick="window.print()" style="background:#111827;color:#fff">Print Report PDF</button>
+<div class="summary" id="summaryBox"></div>
+<button class="btn btn-black" onclick="printReport()">Print Full Report PDF (with Expenses)</button>
+<button class="btn" style="background:#fee2e2" onclick="clearAll()">Clear All Data (Reset)</button>
 </div>
 
 <script>
-const lgaMap={
-"Yobe State":["Damaturu LGA","Potiskum LGA","Nguru LGA","Geidam LGA","Gashua LGA","Gujba LGA"],
-"Borno State":["Maiduguri LGA","Jere LGA","Biu LGA","Konduga LGA"],
-"Bauchi State":["Bauchi LGA","Katagum LGA","Misau LGA"],
-"Gombe State":["Gombe LGA","Billiri LGA"],
-"Adamawa State":["Yola North LGA","Yola South LGA","Mubi LGA"],
-"Jigawa State":["Dutse LGA","Hadejia LGA"],
-"Lagos State":["Ikeja LGA","Surulere LGA","Lagos Mainland LGA"],
-"FCT Abuja":["AMAC","Bwari LGA","Kuje LGA"]
-};
-const stateCodes={"Yobe State":"YB","Borno State":"BO","Bauchi State":"BA","Gombe State":"GB","Adamawa State":"AD","Jigawa State":"JG","Lagos State":"LG","FCT Abuja":"FCT"};
-let students=JSON.parse(localStorage.getItem('acfs_v33')||'[]');
-let members=JSON.parse(localStorage.getItem('acfm_v33')||'[]');
-let donations=JSON.parse(localStorage.getItem('acfd_v33')||'[]');
-function updateLGA(prefix){
-  let stateEl=document.getElementById(prefix+'State');
-  let lgaEl=document.getElementById(prefix+'LGA');
-  let st=stateEl.value;
-  let lgas=lgaMap[st]||["Damaturu LGA"];
-  lgaEl.innerHTML=lgas.map(l=>`<option>${l}</option>`).join('');
-  if(prefix==='s') updateID();
+let students = JSON.parse(localStorage.getItem('acf_students_v36')|| localStorage.getItem('acf_students_v34')|| localStorage.getItem('acf_students_v33')||'[]');
+let members = JSON.parse(localStorage.getItem('acf_members_v34')||'[]');
+let donations = JSON.parse(localStorage.getItem('acf_donations_v34')||'[]');
+let expenses = JSON.parse(localStorage.getItem('acf_expenses_v36')||'[]');
+function genId(p,c){return `${p}/YB/2026/${String(c+1).padStart(3,'0')}`}
+function saveAll(){
+ localStorage.setItem('acf_students_v36',JSON.stringify(students));
+ localStorage.setItem('acf_members_v34',JSON.stringify(members));
+ localStorage.setItem('acf_donations_v34',JSON.stringify(donations));
+ localStorage.setItem('acf_expenses_v36',JSON.stringify(expenses));
 }
-function updateID(){
-  let st=document.getElementById('sState').value;
-  let code=stateCodes[st]||"YB";
-  let year=new Date().getFullYear();
-  document.getElementById('sIDPreview').value=`ACF/${code}/${year}/${String(students.length+1).padStart(3,'0')} - Preview`;
+function updatePreviews(){
+ document.getElementById('s_id_preview').value = genId('ACF',students.length)+' - Preview';
+ let opts='<option value="">-- Select Student --</option>';
+ students.forEach((s,i)=>{ opts+=`<option value="${s.id}">${s.id} - ${s.name} (${s.lga})</option>`; });
+ document.getElementById('e_student').innerHTML=opts;
+ const today=new Date().toISOString().split('T')[0];
+ document.getElementById('e_date').value=today;
 }
-function renderAll(){
-  document.getElementById('sList').innerHTML=students.slice(-5).map(s=>`<div>${s.id} | ${s.name} | ${s.category} | ${s.lga}, ${s.ward} | ${s.phone} ${s.nin? '| NIN:'+s.nin:''}</div>`).join('') || "No students";
-  document.getElementById('mList').innerHTML=members.slice(-5).map(m=>`<div>${m.name} | ${m.role} | ${m.state}, ${m.lga}, ${m.ward} | ${m.phone} ${m.nin? '| NIN:'+m.nin:''}</div>`).join('') || "No members";
-  document.getElementById('dList').innerHTML=donations.slice(-5).map(d=>`<div>₦${d.amount} | ${d.purpose} for ${d.forCat} | ${d.name} | ${d.lga} | ${d.nin? 'NIN:'+d.nin:''}</div>`).join('') || "No donations";
-  let totalAmt=donations.reduce((a,b)=>a+Number(b.amount||0),0);
-  let byCat={}; students.forEach(s=>{byCat[s.category]=(byCat[s.category]||0)+1});
-  document.getElementById('report').innerHTML=`Total Students: ${students.length}<br>Total Members: ${members.length}<br>Total Donations: ₦${totalAmt}<br><br>By Category: ${Object.entries(byCat).map(([k,v])=>`${k}:${v}`).join(', ')||'None'}<br><br>By State: ${[...new Set(members.map(m=>m.state))].join(', ')||'None'}`;
-  updateID();
+function registerStudent(){
+ const data={id:genId('ACF',students.length),name:document.getElementById('s_name').value.trim(),cat:document.getElementById('s_cat').value,state:document.getElementById('s_state').value,lga:document.getElementById('s_lga').value,ward:document.getElementById('s_ward').value.trim(),phone:document.getElementById('s_phone').value.trim(),nin:document.getElementById('s_nin').value.trim(),house:document.getElementById('s_house').value.trim(),postal:document.getElementById('s_postal').value.trim(),date:new Date().toLocaleDateString()};
+ if(!data.name||!data.ward||!data.phone){alert('Fill Name, Ward, Phone');return;}
+ students.push(data); saveAll(); render(); alert('Saved '+data.id);
+ document.getElementById('s_name').value=''; document.getElementById('s_ward').value=''; document.getElementById('s_phone').value='';
 }
-function addStudent(){
-  let name=document.getElementById('sName').value.trim();
-  let phone=document.getElementById('sPhone').value.trim();
-  let ward=document.getElementById('sWard').value.trim();
-  if(!name||!phone||!ward) return alert("Please fill Name, Phone, Ward (required)");
-  let st=document.getElementById('sState').value;
-  let lga=document.getElementById('sLGA').value;
-  let cat=document.getElementById('sCat').value;
-  let nin=document.getElementById('sNIN').value.trim();
-  let house=document.getElementById('sHouse').value.trim();
-  let postal=document.getElementById('sPostal').value.trim();
-  let code=stateCodes[st]||"YB"; let year=new Date().getFullYear();
-  let id=`ACF/${code}/${year}/${String(students.length+1).padStart(3,'0')}`;
-  students.push({id,name,category:cat,state:st,lga,ward,phone,nin,house,postal});
-  localStorage.setItem('acfs_v33',JSON.stringify(students));
-  document.getElementById('sName').value='';document.getElementById('sWard').value='';document.getElementById('sPhone').value='';document.getElementById('sNIN').value='';document.getElementById('sHouse').value='';document.getElementById('sPostal').value='';
-  renderAll(); alert(id+" registered!");
+function registerMember(){
+ const data={id:genId('MEM',members.length),name:document.getElementById('m_name').value.trim(),role:document.getElementById('m_role').value,lga:document.getElementById('m_lga').value,phone:document.getElementById('m_phone').value.trim(),date:new Date().toLocaleDateString()};
+ if(!data.name||!data.phone){alert('Fill Name, Phone');return;}
+ members.push(data); saveAll(); render();
 }
-function addMember(){
-  let name=document.getElementById('mName').value.trim();
-  let phone=document.getElementById('mPhone').value.trim();
-  let ward=document.getElementById('mWard').value.trim();
-  if(!name||!phone||!ward) return alert("Fill Name, Phone, Ward");
-  let st=document.getElementById('mState').value;
-  let lga=document.getElementById('mLGA').value;
-  let role=document.getElementById('mRole').value;
-  let nin=document.getElementById('mNIN').value.trim();
-  let house=document.getElementById('mHouse').value.trim();
-  let postal=document.getElementById('mPostal').value.trim();
-  members.push({name,role,state:st,lga,ward,phone,nin,house,postal});
-  localStorage.setItem('acfm_v33',JSON.stringify(members));
-  document.getElementById('mName').value='';document.getElementById('mWard').value='';document.getElementById('mPhone').value='';document.getElementById('mNIN').value='';document.getElementById('mHouse').value='';document.getElementById('mPostal').value='';
-  renderAll(); alert("Member added!");
+function recordDonation(){
+ const data={id:genId('DON',donations.length),donor:document.getElementById('d_name').value.trim(),amount:parseInt(document.getElementById('d_amount').value)||0,purpose:document.getElementById('d_purpose').value,date:new Date().toLocaleDateString()};
+ if(!data.donor||!data.amount){alert('Fill Donor, Amount');return;}
+ donations.push(data); saveAll(); render();
 }
-function addDonation(){
-  let name=document.getElementById('dName').value.trim();
-  let amount=document.getElementById('dAmount').value;
-  let phone=document.getElementById('dPhone').value.trim();
-  let ward=document.getElementById('dWard').value.trim();
-  if(!name||!amount||!phone||!ward) return alert("Fill Donor Name, Amount, Phone, Ward");
-  let st=document.getElementById('dState').value;
-  let lga=document.getElementById('dLGA').value;
-  let purpose=document.getElementById('dPurpose').value;
-  let forCat=document.getElementById('dForCat').value;
-  let nin=document.getElementById('dNIN').value.trim();
-  let house=document.getElementById('dHouse').value.trim();
-  let postal=document.getElementById('dPostal').value.trim();
-  donations.push({name,amount,phone,state:st,lga,ward,purpose,forCat,nin,house,postal});
-  localStorage.setItem('acfd_v33',JSON.stringify(donations));
-  document.getElementById('dName').value='';document.getElementById('dAmount').value='';document.getElementById('dPhone').value='';document.getElementById('dWard').value='';document.getElementById('dNIN').value='';document.getElementById('dHouse').value='';document.getElementById('dPostal').value='';
-  renderAll(); alert("Donation ₦"+amount+" for "+purpose+" recorded!");
+function recordExpense(){
+ const data={
+  id:genId('EXP',expenses.length),
+  studentId:document.getElementById('e_student').value,
+  studentName:document.getElementById('e_student').selectedOptions[0]?.text||'',
+  amount:parseInt(document.getElementById('e_amount').value)||0,
+  purpose:document.getElementById('e_purpose').value,
+  note:document.getElementById('e_note').value.trim(),
+  date:document.getElementById('e_date').value,
+  recorded: new Date().toLocaleString()
+ };
+ if(!data.studentId||!data.amount){alert('Select Beneficiary and Amount');return;}
+ expenses.push(data); saveAll(); render(); alert(`Recorded ₦${data.amount} for ${data.studentName}`);
+ document.getElementById('e_amount').value=''; document.getElementById('e_note').value='';
 }
-['s','m','d'].forEach(p=>updateLGA(p));
-renderAll();
+function render(){
+ let h='';
+ if(!students.length) h='No students'; else students.forEach((s,i)=>{ h+=`<div class="item"><div><b>${s.id}</b> | ${s.name} | ${s.cat} | ${s.lga} ${s.ward} | ${s.phone} | NIN:${s.nin||'-'} | ${s.date} <br><span class="badge">Postal:${s.postal||'-'} House:${s.house||'-'}</span></div><div><button class="act del" onclick="students.splice(${i},1);saveAll();render()">X</button></div></div>`; });
+ document.getElementById('s_list').innerHTML=h;
+ h=''; if(!members.length) h='No members'; else members.forEach((m,i)=>{ h+=`<div class="item"><div><b>${m.id}</b> | ${m.name} | ${m.role} | ${m.phone} | ${m.date}</div><div><button class="act del" onclick="members.splice(${i},1);saveAll();render()">X</button></div></div>`; });
+ document.getElementById('m_list').innerHTML=h;
+ h=''; if(!donations.length) h='No donations'; else donations.forEach((d,i)=>{ h+=`<div class="item"><div><b>${d.id}</b> | ${d.donor} | ₦${d.amount} | ${d.purpose} | ${d.date}</div><div><button class="act del" onclick="donations.splice(${i},1);saveAll();render()">X</button></div></div>`; });
+ document.getElementById('d_list').innerHTML=h;
+ h=''; if(!expenses.length) h='No expenses yet - Example: ₦5000 for Musa Ali uniform'; else expenses.forEach((e,i)=>{
+  h+=`<div class="item"><div><b>${e.id}</b> | ${e.studentName} | <b>₦${e.amount}</b> | ${e.purpose} | ${e.date}<br><span class="badge">${e.note||'No note'}</span></div><div><button class="act del" onclick="expenses.splice(${i},1);saveAll();render()">X</button></div></div>`;
+ });
+ document.getElementById('e_list').innerHTML=h;
+ const totalDon=donations.reduce((a,b)=>a+b.amount,0);
+ const totalExp=expenses.reduce((a,b)=>a+b.amount,0);
+ document.getElementById('kpi_don').innerText='₦'+totalDon;
+ document.getElementById('kpi_exp').innerText='₦'+totalExp;
+ document.getElementById('kpi_bal').innerText='₦'+(totalDon-totalExp);
+ let perBen={}; expenses.forEach(e=>{ perBen[e.studentId]=(perBen[e.studentId]||0)+e.amount; });
+ let perBenStr=Object.keys(perBen).length? Object.entries(perBen).map(([id,amt])=>`${id}: ₦${amt}`).join('<br>') : 'None yet';
+ document.getElementById('summaryBox').innerHTML=`<b>Summary Report - ${new Date().toLocaleDateString()}</b><br><br>Total Students: ${students.length}<br>Total Members: ${members.length}<br>Total Donations: ₦${totalDon}<br>Total Used For Beneficiaries: ₦${totalExp}<br>Balance: ₦${totalDon-totalExp}<br><br><b>Money Used Per Beneficiary:</b><br>${perBenStr}`;
+ updatePreviews();
+}
+function printReport(){
+ let out=`<h2 style="text-align:center">Absahnaz Care Foundation - Full Financial Report</h2><p style="text-align:center">Damaturu, Yobe - ${new Date().toLocaleString()}</p><hr>`;
+ out+=`<h3>1. Students (${students.length})</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Name</th><th>LGA/Ward</th><th>Phone</th><th>NIN</th><th>Date</th></tr>`;
+ students.forEach(s=>{ out+=`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.lga},${s.ward}</td><td>${s.phone}</td><td>${s.nin||'-'}</td><td>${s.date}</td></tr>`; });
+ out+=`</table>`;
+ out+=`<h3>2. Donations - Total ₦${donations.reduce((a,b)=>a+b.amount,0)}</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Donor</th><th>Amount</th><th>Purpose</th><th>Date</th></tr>`;
+ donations.forEach(d=>{ out+=`<tr><td>${d.id}</td><td>${d.donor}</td><td>₦${d.amount}</td><td>${d.purpose}</td><td>${d.date}</td></tr>`; });
+ out+=`</table>`;
+ out+=`<h3>3. Money Used Per Beneficiary - Total ₦${expenses.reduce((a,b)=>a+b.amount,0)}</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Beneficiary</th><th>Amount</th><th>For What</th><th>Note</th><th>Date</th></tr>`;
+ expenses.forEach(e=>{ out+=`<tr><td>${e.id}</td><td>${e.studentName}</td><td>₦${e.amount}</td><td>${e.purpose}</td><td>${e.note||'-'}</td><td>${e.date}</td></tr>`; });
+ out+=`</table>`;
+ let perBen={}; expenses.forEach(e=>{ perBen[e.studentId]=(perBen[e.studentId]||0)+e.amount; });
+ out+=`<h3>Summary: Money Per Beneficiary</h3><ul>`;
+ Object.entries(perBen).forEach(([id,amt])=>{ out+=`<li>${id}: ₦${amt}</li>`; });
+ out+=`</ul><p>Balance: ₦${donations.reduce((a,b)=>a+b.amount,0)-expenses.reduce((a,b)=>a+b.amount,0)}</p><p>Signed: Chairman</p>`;
+ const w=window.open('','_blank'); w.document.write(out); w.document.close(); w.print();
+}
+function clearAll(){ if(confirm('Delete ALL data? Cannot undo!')){ localStorage.clear(); students=[];members=[];donations=[];expenses=[]; render(); } }
+render();
 </script>
 </body>
 </html>
