@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Absahnaz Care Foundation - V3.6 Expense</title>
+<title>Absahnaz Care Foundation - V3.7 Search+WhatsApp</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,system-ui,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.5;padding:12px}
@@ -16,6 +16,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 .btn{width:100%;padding:13px;border:none;border-radius:12px;background:#f59e0b;color:#000;font-weight:800;font-size:14px;cursor:pointer;margin-top:12px}
 .btn-green{background:#16a34a;color:#fff}
 .btn-black{background:#0f172a;color:#fff}
+.btn-wa{background:#25D366;color:#fff}
 .list{font-size:11px;margin-top:10px;background:#f8fafc;padding:8px;border-radius:8px;max-height:350px;overflow:auto}
 .item{padding:8px;border-bottom:1px dashed #e2e8f0;display:flex;justify-content:space-between;gap:8px}
 .badge{font-size:10px;background:#fef3c7;padding:2px 6px;border-radius:20px;display:inline-block;margin-top:3px}
@@ -23,15 +24,17 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .act{padding:5px 9px;border-radius:8px;border:none;font-size:11px;font-weight:700;cursor:pointer}
 .del{background:#fee2e2;color:#b91c1c}
+.wa{background:#dcfce7;color:#166534}
 .kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
 .kpi div{background:#fff;border-radius:10px;padding:10px;text-align:center;border:1px solid #e2e8f0}
 .kpi b{font-size:16px;display:block}
+.search{background:#fff;border:2px solid #f59e0b;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="card">
 <h1>Absahnaz Care Foundation</h1>
-<div class="small">Portal V3.6 - With Beneficiary Expense Tracker - Damaturu, Yobe</div>
+<div class="small">Portal V3.7 - Search + WhatsApp Share - Damaturu, Yobe</div>
 <h2>1. Register Student - With LGA/Ward</h2>
 <label>Full Name *</label><input id="s_name" placeholder="Musa Ali">
 <div class="grid2">
@@ -50,6 +53,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 <label>Postal (Optional)</label><input id="s_postal" value="620001">
 <input id="s_id_preview" disabled style="margin-top:8px" placeholder="ACF/YB/2026/ - Preview">
 <button class="btn" onclick="registerStudent()">Register Student ACF/YB/2026/...</button>
+<input id="search_s" class="search" placeholder="🔍 Search Student by ID or Name: e.g. ACF/YB/2026/001 or Ali" oninput="render()">
 <div id="s_list" class="list">No students</div>
 </div>
 <div class="card">
@@ -61,6 +65,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 </div>
 <label>Phone *</label><input id="m_phone" placeholder="080...">
 <button class="btn" onclick="registerMember()">Register State Member</button>
+<input id="search_m" class="search" placeholder="🔍 Search Member" oninput="render()">
 <div id="m_list" class="list">No members</div>
 </div>
 <div class="card">
@@ -72,7 +77,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 <div id="d_list" class="list">No donations</div>
 </div>
 <div class="card" style="border:2px solid #16a34a">
-<h2>4. NEW: Record Money Used For Each Beneficiary 💰</h2>
+<h2>4. Record Money Used For Each Beneficiary 💰</h2>
 <label>Select Beneficiary (Student) *</label>
 <select id="e_student"></select>
 <div class="grid2">
@@ -93,6 +98,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 <label>Description / Receipt Note (Optional)</label>
 <textarea id="e_note" rows="2" placeholder="e.g. Bought 2 uniforms for Musa at Damaturu market, receipt No 123"></textarea>
 <button class="btn btn-green" onclick="recordExpense()">💰 Record Expense For Beneficiary</button>
+<input id="search_e" class="search" placeholder="🔍 Search Expenses by ID: ACF/YB/2026/001 or Purpose Uniform" oninput="render()">
 <div id="e_list" class="list">No expenses yet</div>
 <div class="kpi">
 <div><b id="kpi_don">₦0</b><span style="font-size:10px">Total Donations</span></div>
@@ -102,6 +108,7 @@ input,select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1px
 </div>
 <div class="card">
 <div class="summary" id="summaryBox"></div>
+<button class="btn btn-wa" onclick="shareWhatsApp()">💬 Share Summary to WhatsApp</button>
 <button class="btn btn-black" onclick="printReport()">Print Full Report PDF (with Expenses)</button>
 <button class="btn" style="background:#fee2e2" onclick="clearAll()">Clear All Data (Reset)</button>
 </div>
@@ -146,14 +153,33 @@ if(!data.studentId||!data.amount){alert('Select Beneficiary and Amount');return;
 expenses.push(data);saveAll();render();alert(`Recorded ₦${data.amount} for ${data.studentName}`);
 document.getElementById('e_amount').value='';document.getElementById('e_note').value='';
 }
+function shareOneExpense(i){
+const e=expenses[i];
+const txt=`*Absahnaz Care Foundation - Expense Report*%0A%0A*${e.id}*%0ABeneficiary: ${e.studentName}%0AAmount Used: ₦${e.amount}%0AFor: ${e.purpose}%0ANote: ${e.note||'-'}%0ADate: ${e.date}%0A%0ADamaturu, Yobe`;
+window.open(`https://wa.me/?text=${txt}`,'_blank');
+}
+function shareWhatsApp(){
+const totalDon=donations.reduce((a,b)=>a+b.amount,0);
+const totalExp=expenses.reduce((a,b)=>a+b.amount,0);
+let perBen={};expenses.forEach(e=>{perBen[e.studentId]=(perBen[e.studentId]||0)+e.amount;});
+let perBenStr=Object.entries(perBen).map(([id,amt])=>`${id}: ₦${amt}`).join('%0A')||'None';
+const txt=`*Absahnaz Care Foundation - Summary ${new Date().toLocaleDateString()}*%0A%0ATotal Students: ${students.length}%0ATotal Donations: ₦${totalDon}%0ATotal Used: ₦${totalExp}%0ABalance: ₦${totalDon-totalExp}%0A%0A*Per Beneficiary:*%0A${perBenStr}%0A%0ADamaturu, Yobe - absahnazcarefoundation.github.io`;
+window.open(`https://wa.me/?text=${txt}`,'_blank');
+}
 function render(){
-let h='';if(!students.length)h='No students';else students.forEach((s,i)=>{h+=`<div class="item"><div><b>${s.id}</b> | ${s.name} | ${s.cat} | ${s.lga} ${s.ward} | ${s.phone} | NIN:${s.nin||'-'} | ${s.date}<br><span class="badge">Postal:${s.postal||'-'} House:${s.house||'-'}</span></div><div><button class="act del" onclick="students.splice(${i},1);saveAll();render()">X</button></div></div>`;});
+const fs=(document.getElementById('search_s')?.value||'').toLowerCase();
+const fm=(document.getElementById('search_m')?.value||'').toLowerCase();
+const fe=(document.getElementById('search_e')?.value||'').toLowerCase();
+let h='';let filteredS=students.filter(s=>!fs||(s.id+s.name+s.lga+s.ward).toLowerCase().includes(fs));
+if(!filteredS.length)h=students.length?'No match for search':'No students';else filteredS.forEach((s)=>{let realIdx=students.indexOf(s);h+=`<div class="item"><div><b>${s.id}</b> | ${s.name} | ${s.cat} | ${s.lga} ${s.ward} | ${s.phone} | NIN:${s.nin||'-'} | ${s.date}<br><span class="badge">Postal:${s.postal||'-'} House:${s.house||'-'}</span></div><div><button class="act del" onclick="students.splice(${realIdx},1);saveAll();render()">X</button></div></div>`;});
 document.getElementById('s_list').innerHTML=h;
-h='';if(!members.length)h='No members';else members.forEach((m,i)=>{h+=`<div class="item"><div><b>${m.id}</b> | ${m.name} | ${m.role} | ${m.phone} | ${m.date}</div><div><button class="act del" onclick="members.splice(${i},1);saveAll();render()">X</button></div></div>`;});
+h='';let filteredM=members.filter(m=>!fm||(m.id+m.name).toLowerCase().includes(fm));
+if(!filteredM.length)h=members.length?'No match':'No members';else filteredM.forEach((m)=>{let realIdx=members.indexOf(m);h+=`<div class="item"><div><b>${m.id}</b> | ${m.name} | ${m.role} | ${m.phone} | ${m.date}</div><div><button class="act del" onclick="members.splice(${realIdx},1);saveAll();render()">X</button></div></div>`;});
 document.getElementById('m_list').innerHTML=h;
 h='';if(!donations.length)h='No donations';else donations.forEach((d,i)=>{h+=`<div class="item"><div><b>${d.id}</b> | ${d.donor} | ₦${d.amount} | ${d.purpose} | ${d.date}</div><div><button class="act del" onclick="donations.splice(${i},1);saveAll();render()">X</button></div></div>`;});
 document.getElementById('d_list').innerHTML=h;
-h='';if(!expenses.length)h='No expenses yet - Example: ₦5000 for Musa Ali uniform';else expenses.forEach((e,i)=>{h+=`<div class="item"><div><b>${e.id}</b> | ${e.studentName} | <b>₦${e.amount}</b> | ${e.purpose} | ${e.date}<br><span class="badge">${e.note||'No note'}</span></div><div><button class="act del" onclick="expenses.splice(${i},1);saveAll();render()">X</button></div></div>`;});
+h='';let filteredE=expenses.filter(e=>!fe||(e.id+e.studentId+e.studentName+e.purpose).toLowerCase().includes(fe));
+if(!filteredE.length)h=expenses.length?'No match for search - try ACF/YB/2026/001':'No expenses yet - Example: ₦5000 for Musa Ali uniform';else filteredE.forEach((e)=>{let realIdx=expenses.indexOf(e);h+=`<div class="item"><div><b>${e.id}</b> | ${e.studentName} | <b>₦${e.amount}</b> | ${e.purpose} | ${e.date}<br><span class="badge">${e.note||'No note'}</span></div><div style="display:flex;flex-direction:column;gap:4px"><button class="act wa" onclick="shareOneExpense(${realIdx})">WA</button><button class="act del" onclick="expenses.splice(${realIdx},1);saveAll();render()">X</button></div></div>`;});
 document.getElementById('e_list').innerHTML=h;
 const totalDon=donations.reduce((a,b)=>a+b.amount,0);
 const totalExp=expenses.reduce((a,b)=>a+b.amount,0);
@@ -169,4 +195,19 @@ function printReport(){
 let out=`<h2 style="text-align:center">Absahnaz Care Foundation - Full Financial Report</h2><p style="text-align:center">Damaturu, Yobe - ${new Date().toLocaleString()}</p><hr>`;
 out+=`<h3>1. Students (${students.length})</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Name</th><th>LGA/Ward</th><th>Phone</th><th>NIN</th><th>Date</th></tr>`;
 students.forEach(s=>{out+=`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.lga},${s.ward}</td><td>${s.phone}</td><td>${s.nin||'-'}</td><td>${s.date}</td></tr>`;});
-out+=`</table><h3>2. Donations - Total ₦${donations.reduce((a,b)=>a+b.amount,0)}</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Donor</th><th>Amount</th><th>Purpose
+out+=`</table><h3>2. Donations - Total ₦${donations.reduce((a,b)=>a+b.amount,0)}</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Donor</th><th>Amount</th><th>Purpose</th><th>Date</th></tr>`;
+donations.forEach(d=>{out+=`<tr><td>${d.id}</td><td>${d.donor}</td><td>₦${d.amount}</td><td>${d.purpose}</td><td>${d.date}</td></tr>`;});
+out+=`</table><h3>3. Money Used Per Beneficiary - Total ₦${expenses.reduce((a,b)=>a+b.amount,0)}</h3><table border="1" cellpadding="5" cellspacing="0" style="width:100%;font-size:10px;border-collapse:collapse"><tr><th>ID</th><th>Beneficiary</th><th>Amount</th><th>For What</th><th>Note</th><th>Date</th></tr>`;
+expenses.forEach(e=>{out+=`<tr><td>${e.id}</td><td>${e.studentName}</td><td>₦${e.amount}</td><td>${e.purpose}</td><td>${e.note||'-'}</td><td>${e.date}</td></tr>`;});
+out+=`</table>`;
+let perBen={};expenses.forEach(e=>{perBen[e.studentId]=(perBen[e.studentId]||0)+e.amount;});
+out+=`<h3>Summary: Money Per Beneficiary</h3><ul>`;
+Object.entries(perBen).forEach(([id,amt])=>{out+=`<li>${id}: ₦${amt}</li>`;});
+out+=`</ul><p>Balance: ₦${donations.reduce((a,b)=>a+b.amount,0)-expenses.reduce((a,b)=>a+b.amount,0)}</p><p>Signed: Chairman</p>`;
+const w=window.open('','_blank');w.document.write(out);w.document.close();w.print();
+}
+function clearAll(){if(confirm('Delete ALL data? Cannot undo!')){localStorage.clear();students=[];members=[];donations=[];expenses=[];render();}}
+render();
+</script>
+</body>
+</html>
