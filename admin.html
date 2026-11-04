@@ -20,9 +20,9 @@ button.secondary{background:#e2e8f0}button.danger{background:#fee2e2;color:#991b
 
 <section id="login" class="card">
 <h2>Founder sign in</h2>
-<p class="muted">Enter your foundation email. We will send a six-digit verification code.</p>
+<p class="muted">Enter your foundation email. We will send you a secure sign-in link. Open that email and tap the link to sign in.</p>
 <label>Email</label><input id="email" type="email" autocomplete="email" value="absahnazcarefoundationorg@gmail.com">
-<button id="sendCode">Send verification code</button>
+<button id="sendCode">Send sign-in link</button>
 <div id="verifyArea" class="hidden"><label>Six-digit code</label><input id="token" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><button id="verifyCode">Verify and sign in</button></div>
 <div id="loginStatus" class="status" aria-live="polite">You must sign in to access records.</div>
 </section>
@@ -64,13 +64,31 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const today=new Date().toISOString().slice(0,10);$('d_date').value=today;$('e_date').value=today;
 function msg(t){$('loginStatus').textContent=t}
-$('sendCode').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Enter your email address.');return}
+$$('sendCode').onclick=async()=>{
+const email=$('email').value.trim();
+if(!email){msg('Enter your email address.');return}
+$('sendCode').disabled=true;
+msg('Sending sign-in link…');
+
+const {error}=await db.auth.signInWithOtp({
+  email,
+  options:{
+    shouldCreateUser:false,
+    emailRedirectTo:'https://absahnazcarefoundation.github.io/admin.html'
+  }
+});
+
+$('sendCode').disabled=false;
+if(error){msg(error.message);return}
+
+msg('Check your inbox and tap the sign-in link. You will return here automatically.');
+};
+
+$('email').value.trim();if(!email){msg('Enter your email address.');return}
 $('sendCode').disabled=true;msg('Sending code…');
 const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
 $('sendCode').disabled=false;if(error){msg(error.message);return}
 $('verifyArea').classList.remove('hidden');msg('Check your inbox for the six-digit code. If it does not arrive, check spam and your Supabase email template settings.')};
-$('verifyCode').onclick=async()=>{const email=$('email').value.trim(),token=$('token').value.trim();if(!/^\d{6}$/.test(token)){msg('Enter the six-digit code.');return}
-msg('Verifying…');const {error}=await db.auth.verifyOtp({email,token,type:'email'});if(error){msg(error.message);return}await showApp()};
 $('signOut').onclick=async()=>{await db.auth.signOut();$('app').classList.add('hidden');$('login').classList.remove('hidden');msg('You have signed out.')};
 async function showApp(){const {data:{user}}=await db.auth.getUser();if(!user)return;$('signedEmail').textContent=user.email;$('login').classList.add('hidden');$('app').classList.remove('hidden');await loadAll()}
 async function fetchTable(table,order='created_at'){const {data,error}=await db.from(table).select('*').order(order,{ascending:false});if(error)throw error;return data||[]}
