@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Absahnaz Care Foundation | Founder Portal</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;background:#f1f5f9;color:#172033;margin:0;padding:16px}
+main{max-width:850px;margin:auto}.card{background:white;padding:18px;margin:14px 0;border-radius:14px;box-shadow:0 2px 12px #0001}
+h1{text-align:center;font-size:23px}h2{font-size:18px;margin-top:0}.muted{color:#64748b;font-size:13px}
+label{display:block;font-size:13px;font-weight:650;margin:10px 0 4px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff}
+button{border:0;border-radius:9px;padding:11px 15px;background:#d99a13;color:#171717;font-weight:700;margin-top:12px;cursor:pointer}
+button.secondary{background:#e2e8f0}button.danger{background:#fee2e2;color:#991b1b}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.row{padding:10px 0;border-bottom:1px solid #e2e8f0;overflow-wrap:anywhere}.row button{margin:4px 4px 0 0}.status{padding:10px;background:#eff6ff;border-radius:8px;margin:10px 0;white-space:pre-wrap}
+@media(max-width:550px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header class="card"><h1>Absahnaz Care Foundation</h1><p class="muted" style="text-align:center">Founder-only management portal · Every Child Deserves a Better Future.</p></header>
+
+<section id="login" class="card">
+<h2>Founder sign in</h2>
+<p class="muted">Enter your foundation email. We will send a six-digit verification code.</p>
+<label>Email</label><input id="email" type="email" autocomplete="email" value="absahnazcarefoundationorg@gmail.com">
+<button id="sendCode">Send verification code</button>
+<div id="verifyArea" class="hidden"><label>Six-digit code</label><input id="token" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><button id="verifyCode">Verify and sign in</button></div>
+<div id="loginStatus" class="status" aria-live="polite">You must sign in to access records.</div>
+</section>
+
+<section id="app" class="hidden">
+<div class="card"><b>Signed in:</b> <span id="signedEmail"></span><button id="signOut" class="secondary" style="float:right;margin-top:0">Sign out</button><p class="muted">Records are stored in Supabase and protected by your database row-level security policies.</p></div>
+
+<div class="card"><h2>1. Beneficiaries / students</h2>
+<label>Full name *</label><input id="b_name">
+<div class="grid"><div><label>Age</label><input id="b_age" type="number" min="0" max="120"></div><div><label>Gender</label><select id="b_gender"><option value="">Not specified</option><option>Female</option><option>Male</option><option>Other</option></select></div></div>
+<label>General location (LGA / ward only)</label><input id="b_location" placeholder="e.g. Damaturu LGA">
+<label>Support type</label><select id="b_support"><option>Educational support</option><option>School materials</option><option>Child welfare</option><option>Other</option></select>
+<label>Notes (avoid sensitive personal details)</label><textarea id="b_notes"></textarea>
+<button id="addB">Save beneficiary</button><div id="b_list"></div></div>
+
+<div class="card"><h2>2. Members</h2>
+<label>Full name *</label><input id="m_name"><div class="grid"><div><label>Role</label><select id="m_role"><option>Volunteer</option><option>Member</option><option>Staff</option></select></div><div><label>General location</label><input id="m_location"></div></div>
+<label>Phone (only if necessary)</label><input id="m_phone" type="tel"><button id="addM">Save member</button><div id="m_list"></div></div>
+
+<div class="card"><h2>3. Donations</h2>
+<label>Donor name</label><input id="d_name"><label>Amount (₦) *</label><input id="d_amount" type="number" min="0.01" step="0.01">
+<label>Purpose</label><input id="d_purpose" placeholder="Books, uniforms, general fund..."><label>Date</label><input id="d_date" type="date"><label>Notes</label><textarea id="d_notes"></textarea>
+<button id="addD">Save donation</button><div id="d_list"></div></div>
+
+<div class="card"><h2>4. Expenses</h2>
+<label>Beneficiary</label><select id="e_beneficiary"><option value="">Not linked to a beneficiary</option></select>
+<label>Beneficiary name (if not selected above)</label><input id="e_name"><label>Amount (₦) *</label><input id="e_amount" type="number" min="0.01" step="0.01">
+<label>Purpose *</label><input id="e_purpose" placeholder="Uniform, books, transport..."><label>Date</label><input id="e_date" type="date"><label>Notes</label><textarea id="e_notes"></textarea>
+<button id="addE">Save expense</button><div id="e_list"></div></div>
+<div class="card"><h2>Financial summary</h2><p id="summary">Loading…</p></div>
+</section>
+<div class="muted" style="text-align:center;padding:15px">Keep children's information to the minimum necessary. Do not enter NINs, exact home addresses, or unnecessary sensitive details.</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jcuthrjugplncaufeyaq.supabase.co';
+const SUPABASE_KEY='sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const today=new Date().toISOString().slice(0,10);$('d_date').value=today;$('e_date').value=today;
+function msg(t){$('loginStatus').textContent=t}
+$('sendCode').onclick=async()=>{const email=$('email').value.trim();if(!email){msg('Enter your email address.');return}
+$('sendCode').disabled=true;msg('Sending code…');
+const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
+$('sendCode').disabled=false;if(error){msg(error.message);return}
+$('verifyArea').classList.remove('hidden');msg('Check your inbox for the six-digit code. If it does not arrive, check spam and your Supabase email template settings.')};
+$('verifyCode').onclick=async()=>{const email=$('email').value.trim(),token=$('token').value.trim();if(!/^\d{6}$/.test(token)){msg('Enter the six-digit code.');return}
+msg('Verifying…');const {error}=await db.auth.verifyOtp({email,token,type:'email'});if(error){msg(error.message);return}await showApp()};
+$('signOut').onclick=async()=>{await db.auth.signOut();$('app').classList.add('hidden');$('login').classList.remove('hidden');msg('You have signed out.')};
+async function showApp(){const {data:{user}}=await db.auth.getUser();if(!user)return;$('signedEmail').textContent=user.email;$('login').classList.add('hidden');$('app').classList.remove('hidden');await loadAll()}
+async function fetchTable(table,order='created_at'){const {data,error}=await db.from(table).select('*').order(order,{ascending:false});if(error)throw error;return data||[]}
+function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function listRows(target,rows,format,table){$(target).innerHTML=rows.length?rows.map(r=>`<div class="row">${format(r)}<br><button class="danger" data-delete="${table}" data-id="${r.id}">Delete</button></div>`).join(''):'<p class="muted">No records yet.</p>'}
+let beneficiaries=[],donations=[],expenses=[],members=[];
+async function loadAll(){try{
+[beneficiaries,members,donations,expenses]=await Promise.all([fetchTable('beneficiaries'),fetchTable('members'),fetchTable('donations','donation_date'),fetchTable('expenses','expense_date')]);
+listRows('b_list',beneficiaries,r=>`<b>${safe(r.beneficiary_name)}</b> · ${safe(r.support_type)} · ${safe(r.location)}`,'beneficiaries');
+listRows('m_list',members,r=>`<b>${safe(r.full_name)}</b> · ${safe(r.role)} · ${safe(r.location)} · ${safe(r.phone)}`,'members');
+listRows('d_list',donations,r=>`<b>${safe(r.donor_name||'Anonymous')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.donation_date)}`,'donations');
+listRows('e_list',expenses,r=>`<b>${safe(r.beneficiary_name||'General')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.expense_date)}`,'expenses');
+$('e_beneficiary').innerHTML='<option value="">Not linked to a beneficiary</option>'+beneficiaries.map(b=>`<option value="${safe(b.id)}">${safe(b.beneficiary_name)}</option>`).join('');
+const d=donations.reduce((s,r)=>s+Number(r.amount),0),e=expenses.reduce((s,r)=>s+Number(r.amount),0);
+$('summary').textContent=`Beneficiaries: ${beneficiaries.length} | Members: ${members.length}\nTotal donations: ₦${d.toLocaleString()}\nTotal expenses: ₦${e.toLocaleString()}\nBalance: ₦${(d-e).toLocaleString()}`;
+}catch(err){alert('Could not load records: '+err.message+' Check table permissions and RLS policies.');}}
+async function insert(table,row){const {error}=await db.from(table).insert(row);if(error){alert('Save failed: '+error.message);return false}await loadAll();return true}
+$('addB').onclick=async()=>{let name=$('b_name').value.trim();if(!name){alert('Enter beneficiary name.');return}if(await insert('beneficiaries',{beneficiary_name:name,age:$('b_age').value?Number($('b_age').value):null,gender:$('b_gender').value||null,location:$('b_location').value.trim()||null,support_type:$('b_support').value,notes:$('b_notes').value.trim()||null})){['b_name','b_age','b_location','b_notes'].forEach(id=>$(id).value='')}};
+$('addM').onclick=async()=>{let name=$('m_name').value.trim();if(!name){alert('Enter member name.');return}if(await insert('members',{full_name:name,role:$('m_role').value,location:$('m_location').value.trim()||null,phone:$('m_phone').value.trim()||null})){['m_name','m_location','m_phone'].forEach(id=>$(id).value='')}};
+$('addD').onclick=async()=>{let amount=Number($('d_amount').value);if(!(amount>0)){alert('Enter a valid amount.');return}if(await insert('donations',{donor_name:$('d_name').value.trim()||null,amount,purpose:$('d_purpose').value.trim()||null,donation_date:$('d_date').value||today,notes:$('d_notes').value.trim()||null})){['d_name','d_amount','d_notes'].forEach(id=>$(id).value='')}};
+$('addE').onclick=async()=>{let amount=Number($('e_amount').value),purpose=$('e_purpose').value.trim();if(!(amount>0)||!purpose){alert('Enter a valid amount and purpose.');return}let selected=beneficiaries.find(b=>b.id===$('e_beneficiary').value);if(await insert('expenses',{beneficiary_name:selected?.beneficiary_name||$('e_name').value.trim()||null,amount,purpose,expense_date:$('e_date').value||today,notes:$('e_notes').value.trim()||null})){['e_name','e_amount','e_purpose','e_notes'].forEach(id=>$(id).value='');$('e_beneficiary').value=''}};
+document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-delete]');if(!b)return;if(!confirm('Delete this record permanently?'))return;const {error}=await db.from(b.dataset.delete).delete().eq('id',b.dataset.id);if(error){alert('Delete failed: '+error.message);return}await loadAll()});
+db.auth.onAuthStateChange((_event,session)=>{if(session)showApp()});
+(async()=>{const {data:{session}}=await db.auth.getSession();if(session)await showApp()})();
+</script></body></html>
