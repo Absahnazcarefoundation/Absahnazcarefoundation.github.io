@@ -91,7 +91,7 @@ $('sendCode').onclick=async()=>{
   }
 
   msg('Check your inbox and tap the sign-in link. You will return here automatically.');
-} If it does not arrive, check spam and your Supabase email template settings.')};
+};
 $('signOut').onclick=async()=>{await db.auth.signOut();$('app').classList.add('hidden');$('login').classList.remove('hidden');msg('You have signed out.')};
 async function showApp(){const {data:{user}}=await db.auth.getUser();if(!user)return;$('signedEmail').textContent=user.email;$('login').classList.add('hidden');$('app').classList.remove('hidden');await loadAll()}
 async function fetchTable(table,order='created_at'){const {data,error}=await db.from(table).select('*').order(order,{ascending:false});if(error)throw error;return data||[]}
