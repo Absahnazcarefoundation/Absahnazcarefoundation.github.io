@@ -23,7 +23,7 @@ button.secondary{background:#e2e8f0}button.danger{background:#fee2e2;color:#991b
 <p class="muted">Enter your foundation email. We will send you a secure sign-in link. Open that email and tap the link to sign in.</p>
 <label>Email</label><input id="email" type="email" autocomplete="email" value="absahnazcarefoundationorg@gmail.com">
 <button id="sendCode">Send sign-in link</button>
-<div id="verifyArea" class="hidden"><label>Six-digit code</label><input id="token" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><button id="verifyCode">Verify and sign in</button></div>
+
 <div id="loginStatus" class="status" aria-live="polite">You must sign in to access records.</div>
 </section>
 
@@ -62,8 +62,36 @@ const SUPABASE_URL='https://jcuthrjugplncaufeyaq.supabase.co';
 const SUPABASE_KEY='sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-const today=new Date().toISOString().slice(0,10);$('d_date').value=today;$('e_date').value=today;
-function msg(t){$('loginStatus').textContent=t}
+const today=new Date().toISOString().slice(0,10);$('d_date').value=today;$('e_date').value=today; function msg(t){$('loginStatus').textContent=t}
+
+$('sendCode').onclick=async()=>{
+  const email=$('email').value.trim();
+
+  if(!email){
+    msg('Enter your email address.');
+    return;
+  }
+
+  $('sendCode').disabled=true;
+  msg('Sending sign-in link…');
+
+  const {error}=await db.auth.signInWithOtp({
+    email,
+    options:{
+      shouldCreateUser:false,
+      emailRedirectTo:'https://absahnazcarefoundation.github.io/admin.html'
+    }
+  });
+
+  $('sendCode').disabled=false;
+
+  if(error){
+    msg(error.message);
+    return;
+  }
+
+  msg('Check your inbox and tap the sign-in link. You will return here automatically.');
+};
 $$('sendCode').onclick=async()=>{
 const email=$('email').value.trim();
 if(!email){msg('Enter your email address.');return}
