@@ -124,7 +124,9 @@ Reason for Volunteering: ${reason || "Not provided"}`;
 
     const whatsappURL = "https://wa.me/2349075839964?text=" + encodeURIComponent(message);
 
+    if (confirm("Your volunteer application is ready. WhatsApp will open with your details. Please tap SEND in WhatsApp to complete your submission. Continue?")) {
     window.location.href = whatsappURL;
+}
 });
 </script>
 </body>
