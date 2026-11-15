@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beneficiary Recommendation | Absahnaz Care Foundation</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f7f4;
+    margin: 0;
+    padding: 20px;
+    color: #26352e;
+}
+.container {
+    max-width: 600px;
+    margin: 25px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+h1 {
+    color: #075b45;
+    text-align: center;
+    font-size: 25px;
+}
+.subtitle {
+    text-align: center;
+    line-height: 1.6;
+}
+label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+}
+input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+textarea {
+    min-height: 100px;
+}
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-weight: normal;
+    line-height: 1.5;
+}
+.checkbox input {
+    width: auto;
+    margin-top: 4px;
+}
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 22px;
+    background: #075b45;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 17px;
+    font-weight: bold;
+}
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #075b45;
+}
+.notice {
+    background: #edf6f0;
+    padding: 13px;
+    border-radius: 7px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>ABSAHNAZ CARE FOUNDATION</h1>
+
+<p class="subtitle">
+<strong>Beneficiary Recommendation Form</strong><br>
+First Five Children Support Programme<br>
+Damaturu, Yobe State
+</p>
+
+<p>
+Thank you for helping us identify children who may need educational and basic welfare assistance. Please complete this form with accurate information.
+</p>
+
+<form id="referralForm">
+
+<label>Recommender's Full Name *</label>
+<input type="text" name="recommender" required>
+
+<label>Phone Number *</label>
+<input type="tel" name="phone" required>
+
+<label>Role *</label>
+<select name="role" required>
+<option value="">Select your role</option>
+<option>Teacher</option>
+<option>School Administrator</option>
+<option>Community Leader</option>
+<option>Community Volunteer</option>
+<option>Other</option>
+</select>
+
+<label>School or Community *</label>
+<input type="text" name="community" required>
+
+<label>General Location *</label>
+<input type="text" name="location" placeholder="e.g. Damaturu, Yobe State" required>
+
+<label>Child's Age Range *</label>
+<select name="age" required>
+<option value="">Select age range</option>
+<option>Below 6 years</option>
+<option>6–9 years</option>
+<option>10–13 years</option>
+<option>14–17 years</option>
+</select>
+
+<label>Is the child currently attending school or a learning centre? *</label>
+<select name="schoolStatus" required>
+<option value="">Select an answer</option>
+<option>Yes</option>
+<option>No</option>
+<option>Not sure</option>
+</select>
+
+<label>Type of Assistance Needed *</label>
+<select name="assistance" required>
+<option value="">Select assistance</option>
+<option>School materials</option>
+<option>School uniform</option>
+<option>Sandals or footwear</option>
+<option>Basic welfare support</option>
+<option>Multiple types of assistance</option>
+</select>
+
+<label>Why is this child being recommended? *</label>
+<textarea name="reason" required placeholder="Briefly explain the child's circumstances without including unnecessary private information."></textarea>
+
+<label>Has the parent or guardian been informed and given permission for this recommendation? *</label>
+<select name="consent" required>
+<option value="">Select an answer</option>
+<option>Yes, permission obtained</option>
+<option>No, permission not yet obtained</option>
+</select>
+
+<div class="notice">
+<strong>Privacy Notice:</strong> Do not enter the child's full name, exact home address, phone number, NIN or photographs. Parent or guardian permission must be obtained before collecting further information or arranging support.
+</div>
+
+<label class="checkbox">
+<input type="checkbox" name="accuracy" required>
+I confirm that the information provided is accurate to the best of my knowledge.
+</label>
+
+<button type="submit">Submit Recommendation</button>
+
+</form>
+
+<a class="back" href="index.html">Back to Home</a>
+
+</div>
+
+<script>
+document.getElementById("referralForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const data = new FormData(form);
+
+    const message = `NEW BENEFICIARY RECOMMENDATION
+Absahnaz Care Foundation
+
+Recommender: ${data.get("recommender")}
+Phone: ${data.get("phone")}
+Role: ${data.get("role")}
+School/Community: ${data.get("community")}
+Location: ${data.get("location")}
+Child's Age Range: ${data.get("age")}
+School Status: ${data.get("schoolStatus")}
+Assistance Needed: ${data.get("assistance")}
+Reason: ${data.get("reason")}
+Guardian Permission: ${data.get("consent")}
+
+Accuracy confirmed: Yes`;
+
+    if (confirm("Your recommendation is ready. WhatsApp will open with the details. Please review and tap SEND to submit it. Continue?")) {
+        window.location.href =
+        "https://wa.me/2349075839964?text=" + encodeURIComponent(message);
+    }
+});
+</script>
+
+</body>
+</html>
