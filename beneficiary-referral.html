@@ -180,31 +180,57 @@ I confirm that the information provided is accurate to the best of my knowledge.
 </div>
 
 <script>
-document.getElementById("referralForm").addEventListener("submit", function(event) {
+document.getElementById("referralForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const form = event.target;
     const data = new FormData(form);
 
-    const message = `NEW BENEFICIARY RECOMMENDATION
-Absahnaz Care Foundation
+    const recommendation = {
+        recommender_name: data.get("recommender").trim(),
+        recommender_phone: data.get("phone").trim(),
+        recommender_role: data.get("role"),
+        school_community: data.get("community").trim(),
+        location: data.get("location").trim(),
+        child_age_range: data.get("age"),
+        school_status: data.get("schoolStatus"),
+        assistance_needed: data.get("assistance"),
+        reason: data.get("reason").trim(),
+        guardian_permission: data.get("consent")
+    };
 
-Recommender: ${data.get("recommender")}
-Phone: ${data.get("phone")}
-Role: ${data.get("role")}
-School/Community: ${data.get("community")}
-Location: ${data.get("location")}
-Child's Age Range: ${data.get("age")}
-School Status: ${data.get("schoolStatus")}
-Assistance Needed: ${data.get("assistance")}
-Reason: ${data.get("reason")}
-Guardian Permission: ${data.get("consent")}
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    button.textContent = "Submitting...";
 
-Accuracy confirmed: Yes`;
+    try {
+        const response = await fetch(
+            "https://jcuthrjugplncaufeyaq.supabase.co/rest/v1/beneficiary_recommendations",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": "sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3",
+                    "Authorization": "Bearer sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3",
+                    "Prefer": "return=minimal"
+                },
+                body: JSON.stringify(recommendation)
+            }
+        );
 
-    if (confirm("Your recommendation is ready. WhatsApp will open with the details. Please review and tap SEND to submit it. Continue?")) {
-        window.location.href =
-        "https://wa.me/2349075839964?text=" + encodeURIComponent(message);
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+
+        alert("Thank you! Your beneficiary recommendation has been submitted successfully.");
+        form.reset();
+
+    } catch (error) {
+        console.error("Submission error:", error);
+        alert("Your recommendation could not be submitted. Please try again later or contact the foundation.");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Submit Recommendation";
     }
 });
 </script>
