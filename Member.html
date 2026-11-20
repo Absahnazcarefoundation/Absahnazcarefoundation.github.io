@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership Application | Absahnaz Care Foundation</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f0f8f4;color:#263238;margin:0;padding:20px}
+.container{max-width:650px;margin:25px auto;background:white;padding:25px;border-radius:12px;box-shadow:0 3px 12px #0002}
+h1,h2{color:#075b45;text-align:center}
+label{display:block;font-weight:bold;margin-top:15px}
+input,select,textarea{width:100%;box-sizing:border-box;padding:12px;margin-top:6px;border:1px solid #ccc;border-radius:6px;font-size:16px}
+button{background:#075b45;color:white;border:0;padding:14px;width:100%;border-radius:7px;font-size:16px;font-weight:bold;margin-top:20px}
+.notice{background:#e8f5ef;padding:12px;border-radius:7px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Absahnaz Care Foundation</h1>
+<h2>Membership Application Form</h2>
+<p class="notice">Complete this form to apply to become a member. Your application will be assessed according to the foundation's membership criteria.</p>
+
+<form id="memberForm">
+<label>Full Name</label>
+<input name="full_name" required>
+
+<label>Phone Number</label>
+<input name="phone" type="tel" required>
+
+<label>Email Address</label>
+<input name="email" type="email" required>
+
+<label>Location</label>
+<input name="location" required>
+
+<label>Why do you want to join the foundation?</label>
+<textarea name="motivation" rows="4" required></textarea>
+
+<label>How will you contribute to the foundation?</label>
+<textarea name="contribution" rows="4" required></textarea>
+
+<label>Do you understand and support the foundation's mission?</label>
+<select name="mission_support" required>
+<option value="">Select an answer</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+
+<label>Are you willing to follow the foundation's rules and guidelines?</label>
+<select name="rules_agreement" required>
+<option value="">Select an answer</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+
+<label>
+<input type="checkbox" name="accuracy" required style="width:auto">
+I confirm that the information provided is accurate.
+</label>
+
+<button type="submit">Submit Membership Application</button>
+</form>
+
+<p id="result" aria-live="polite"></p>
+<p style="text-align:center"><a href="index.html">Back to Home</a></p>
+</div>
+</body>
+</html>
