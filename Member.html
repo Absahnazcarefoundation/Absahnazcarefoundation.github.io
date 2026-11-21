@@ -183,11 +183,10 @@ form.addEventListener('submit', async function(event) {
         form.reset();
 
     } catch (error) {
-        console.error('Submission error:', error);
-        result.style.color = 'red';
-        result.textContent =
-            'We could not submit your application. Please try again later.';
-    }
+    console.error('Submission error:', error);
+    result.style.color = 'red';
+    result.textContent = 'Submission error: ' + error.message;
+}
 
     submitButton.disabled = false;
     submitButton.textContent = 'Submit Membership Application';
