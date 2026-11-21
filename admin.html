@@ -57,6 +57,13 @@ button.secondary{background:#e2e8f0}button.danger{background:#fee2e2;color:#991b
   <p class="muted">Recommendations submitted by teachers and community members.</p>
   <div id="r_list"><p class="muted">Loading recommendations…</p></div>
 </div>
+  <div class="card">
+  <h2>6. Membership Applications</h2>
+  <p class="muted">Review membership applications submitted through the foundation website.</p>
+  <div id="membership_list">
+    <p class="muted">Loading membership applications…</p>
+  </div>
+</div>
 <div class="card"><h2>Financial summary</h2><p id="summary">Loading…</p></div>
 </section>
 <div class="muted" style="text-align:center;padding:15px">Keep children's information to the minimum necessary. Do not enter NINs, exact home addresses, or unnecessary sensitive details.</div>
@@ -103,7 +110,9 @@ async function fetchTable(table,order='created_at'){const {data,error}=await db.
 function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function listRows(target,rows,format,table){$(target).innerHTML=rows.length?rows.map(r=>`<div class="row">${format(r)}<br><button class="danger" data-delete="${table}" data-id="${r.id}">Delete</button></div>`).join(''):'<p class="muted">No records yet.</p>'}
 let beneficiaries=[],donations=[],expenses=[],members=[];
+  let membershipApplications=[];
 async function loadAll(){try{const recommendations=await fetchTable('beneficiary_recommendations');
+membershipApplications=await fetchTable('membership_applications');
 [beneficiaries,members,donations,expenses]=await Promise.all([fetchTable('beneficiaries'),fetchTable('members'),fetchTable('donations','donation_date'),fetchTable('expenses','expense_date')]);
 $('r_list').innerHTML=recommendations.length?recommendations.map(r=>`
 <div class="row">
@@ -117,6 +126,19 @@ Assistance: ${safe(r.assistance_needed)}<br>
 Guardian permission: ${safe(r.guardian_permission)}<br>
 Reason: ${safe(r.reason)}
 </div>`).join(''):'<p class="muted">No recommendations received yet.</p>';
+                             $('membership_list').innerHTML=membershipApplications.length?membershipApplications.map(r=>`
+<div class="row">
+<b>${safe(r.full_name)}</b><br>
+Phone: ${safe(r.phone)}<br>
+Email: ${safe(r.email)}<br>
+Location: ${safe(r.location)}<br>
+Reason for joining: ${safe(r.motivation)}<br>
+Proposed contribution: ${safe(r.contribution)}<br>
+Mission support: ${safe(r.mission_support)}<br>
+Rules agreement: ${safe(r.rules_agreement)}<br>
+Assessment score: ${safe(r.score)} / 100<br>
+Status: <b>${safe(r.status)}</b>
+</div>`).join(''):'<p class="muted">No membership applications received yet.</p>';
 listRows('b_list',beneficiaries,r=>`<b>${safe(r.beneficiary_name)}</b> · ${safe(r.support_type)} · ${safe(r.location)}`,'beneficiaries');
 listRows('m_list',members,r=>`<b>${safe(r.full_name)}</b> · ${safe(r.role)} · ${safe(r.location)} · ${safe(r.phone)}`,'members');
 listRows('d_list',donations,r=>`<b>${safe(r.donor_name||'Anonymous')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.donation_date)}`,'donations');
