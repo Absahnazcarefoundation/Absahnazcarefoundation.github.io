@@ -137,7 +137,8 @@ Proposed contribution: ${safe(r.contribution)}<br>
 Mission support: ${safe(r.mission_support)}<br>
 Rules agreement: ${safe(r.rules_agreement)}<br>
 Assessment score: ${safe(r.score)} / 100<br>
-Status: <b>${safe(r.status)}</b>
+Status: <b>${safe(r.status)}</b><br>
+${!['approved','declined'].includes(r.status) ? '<button data-review="approve" data-id="' + safe(r.id) + '">Approve</button> <button class="danger" data-review="decline" data-id="' + safe(r.id) + '">Decline</button>' : ''}
 </div>`).join(''):'<p class="muted">No membership applications received yet.</p>';
 listRows('b_list',beneficiaries,r=>`<b>${safe(r.beneficiary_name)}</b> · ${safe(r.support_type)} · ${safe(r.location)}`,'beneficiaries');
 listRows('m_list',members,r=>`<b>${safe(r.full_name)}</b> · ${safe(r.role)} · ${safe(r.location)} · ${safe(r.phone)}`,'members');
@@ -153,6 +154,32 @@ $('addM').onclick=async()=>{let name=$('m_name').value.trim();if(!name){alert('E
 $('addD').onclick=async()=>{let amount=Number($('d_amount').value);if(!(amount>0)){alert('Enter a valid amount.');return}if(await insert('donations',{donor_name:$('d_name').value.trim()||null,amount,purpose:$('d_purpose').value.trim()||null,donation_date:$('d_date').value||today,notes:$('d_notes').value.trim()||null})){['d_name','d_amount','d_notes'].forEach(id=>$(id).value='')}};
 $('addE').onclick=async()=>{let amount=Number($('e_amount').value),purpose=$('e_purpose').value.trim();if(!(amount>0)||!purpose){alert('Enter a valid amount and purpose.');return}let selected=beneficiaries.find(b=>b.id===$('e_beneficiary').value);if(await insert('expenses',{beneficiary_name:selected?.beneficiary_name||$('e_name').value.trim()||null,amount,purpose,expense_date:$('e_date').value||today,notes:$('e_notes').value.trim()||null})){['e_name','e_amount','e_purpose','e_notes'].forEach(id=>$(id).value='');$('e_beneficiary').value=''}};
 document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-delete]');if(!b)return;if(!confirm('Delete this record permanently?'))return;const {error}=await db.from(b.dataset.delete).delete().eq('id',b.dataset.id);if(error){alert('Delete failed: '+error.message);return}await loadAll()});
+  document.addEventListener('click', async ev => {
+  const button = ev.target.closest('[data-review]');
+  if (!button) return;
+
+  const decision = button.dataset.review;
+  const applicationId = Number(button.dataset.id);
+
+  if (!confirm(`Are you sure you want to ${decision} this application?`)) return;
+
+  button.disabled = true;
+
+  const { data, error } = await db.rpc('review_membership_application', {
+    application_id: applicationId,
+    decision: decision
+  });
+
+  button.disabled = false;
+
+  if (error) {
+    alert('Review failed: ' + error.message);
+    return;
+  }
+
+  alert(data);
+  await loadAll();
+});
 db.auth.onAuthStateChange((_event,session)=>{if(session)showApp()});
 (async()=>{const {data:{session}}=await db.auth.getSession();if(session)await showApp()})();
 </script></body></html>
