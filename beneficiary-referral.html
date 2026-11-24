@@ -69,6 +69,9 @@ button {
     font-size: 17px;
     font-weight: bold;
 }
+button:disabled {
+    opacity: 0.6;
+}
 .back {
     display: block;
     text-align: center;
@@ -86,7 +89,6 @@ button {
 </head>
 
 <body>
-
 <div class="container">
 
 <h1>ABSAHNAZ CARE FOUNDATION</h1>
@@ -123,7 +125,15 @@ Thank you for helping us identify children who may need educational and basic we
 <input type="text" name="community" required>
 
 <label>General Location *</label>
-<input type="text" name="location" placeholder="e.g. Damaturu, Yobe State" required>
+<input type="text" name="location"
+placeholder="e.g. Damaturu, Yobe State" required>
+
+<label>Child's Reference Code (Optional)</label>
+<input type="text" name="child_reference"
+placeholder="Use a code such as CHILD-001">
+<small>
+Please use a reference code rather than the child's full name.
+</small>
 
 <label>Child's Age Range *</label>
 <select name="age" required>
@@ -153,7 +163,8 @@ Thank you for helping us identify children who may need educational and basic we
 </select>
 
 <label>Why is this child being recommended? *</label>
-<textarea name="reason" required placeholder="Briefly explain the child's circumstances without including unnecessary private information."></textarea>
+<textarea name="reason" required
+placeholder="Briefly explain the child's circumstances without including unnecessary private information."></textarea>
 
 <label>Has the parent or guardian been informed and given permission for this recommendation? *</label>
 <select name="consent" required>
@@ -163,12 +174,17 @@ Thank you for helping us identify children who may need educational and basic we
 </select>
 
 <div class="notice">
-<strong>Privacy Notice:</strong> Do not enter the child's full name, exact home address, phone number, NIN or photographs. Parent or guardian permission must be obtained before collecting further information or arranging support.
+<strong>Privacy Notice:</strong>
+Do not enter the child's full name, exact home address,
+phone number, NIN or photographs. Parent or guardian
+permission must be obtained before collecting further
+information or arranging support.
 </div>
 
 <label class="checkbox">
 <input type="checkbox" name="accuracy" required>
-I confirm that the information provided is accurate to the best of my knowledge.
+I confirm that the information provided is accurate
+to the best of my knowledge.
 </label>
 
 <button type="submit">Submit Recommendation</button>
@@ -192,6 +208,7 @@ document.getElementById("referralForm").addEventListener("submit", async functio
         recommender_role: data.get("role"),
         school_community: data.get("community").trim(),
         location: data.get("location").trim(),
+        child_reference: data.get("child_reference").trim() || null,
         child_age_range: data.get("age"),
         school_status: data.get("schoolStatus"),
         assistance_needed: data.get("assistance"),
@@ -212,7 +229,7 @@ document.getElementById("referralForm").addEventListener("submit", async functio
                     "Content-Type": "application/json",
                     "apikey": "sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3",
                     "Authorization": "Bearer sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3",
-                    "Prefer": "return=minimal"
+                    "Prefer": "return=representation"
                 },
                 body: JSON.stringify(recommendation)
             }
@@ -222,8 +239,17 @@ document.getElementById("referralForm").addEventListener("submit", async functio
             throw new Error(await response.text());
         }
 
-        alert("Thank you! Your beneficiary recommendation has been submitted successfully.");
+        const savedRecords = await response.json();
+        const referenceNumber = savedRecords[0]?.recommendation_ref;
+
         form.reset();
+
+        alert(
+            "Thank you! Your recommendation has been submitted successfully.\n\n" +
+            "Your recommendation reference number is: " +
+            (referenceNumber || "Please contact the Foundation to confirm.") +
+            "\n\nPlease keep this number for future enquiries."
+        );
 
     } catch (error) {
         console.error("Submission error:", error);
