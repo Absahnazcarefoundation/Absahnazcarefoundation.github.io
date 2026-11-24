@@ -1,185 +1,477 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Absahnaz Care Foundation | Founder Portal</title>
 <style>
-*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;background:#f1f5f9;color:#172033;margin:0;padding:16px}
-main{max-width:850px;margin:auto}.card{background:white;padding:18px;margin:14px 0;border-radius:14px;box-shadow:0 2px 12px #0001}
-h1{text-align:center;font-size:23px}h2{font-size:18px;margin-top:0}.muted{color:#64748b;font-size:13px}
+*{box-sizing:border-box}
+body{font-family:system-ui,Arial,sans-serif;background:#f1f5f9;color:#172033;margin:0;padding:16px}
+main{max-width:850px;margin:auto}
+.card{background:white;padding:18px;margin:14px 0;border-radius:14px;box-shadow:0 2px 12px #0001}
+h1{text-align:center;font-size:23px}
+h2{font-size:18px;margin-top:0}
+.muted{color:#64748b;font-size:13px}
 label{display:block;font-size:13px;font-weight:650;margin:10px 0 4px}
 input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;background:#fff}
-button{border:0;border-radius:9px;padding:11px 15px;background:#d99a13;color:#171717;font-weight:700;margin-top:12px;cursor:pointer}
-button.secondary{background:#e2e8f0}button.danger{background:#fee2e2;color:#991b1b}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none}.row{padding:10px 0;border-bottom:1px solid #e2e8f0;overflow-wrap:anywhere}.row button{margin:4px 4px 0 0}.status{padding:10px;background:#eff6ff;border-radius:8px;margin:10px 0;white-space:pre-wrap}
+button{border:0;border-radius:9px;padding:11px 15px;background:#d99a13;color:#171717;font-weight:700;margin:5px 4px 5px 0;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.secondary{background:#e2e8f0}
+button.danger{background:#fee2e2;color:#991b1b}
+button.success{background:#dcfce7;color:#166534}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hidden{display:none}
+.row{padding:12px 0;border-bottom:1px solid #e2e8f0;overflow-wrap:anywhere}
+.status{padding:10px;background:#eff6ff;border-radius:8px;margin:10px 0;white-space:pre-wrap}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#e2e8f0;font-size:12px;font-weight:700}
+.badge.pending{background:#fef3c7}
+.badge.verified,.badge.approved{background:#dcfce7;color:#166534}
+.badge.declined{background:#fee2e2;color:#991b1b}
+.details{background:#f8fafc;padding:12px;border-radius:8px;margin-top:10px}
 @media(max-width:550px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
-<body><main>
-<header class="card"><h1>Absahnaz Care Foundation</h1><p class="muted" style="text-align:center">Founder-only management portal · Every Child Deserves a Better Future.</p></header>
+<body>
+<main>
+
+<header class="card">
+<h1>Absahnaz Care Foundation</h1>
+<p class="muted" style="text-align:center">Founder-only management portal · Every Child Deserves a Better Future.</p>
+</header>
 
 <section id="login" class="card">
 <h2>Founder sign in</h2>
-<p class="muted">Enter your foundation email. We will send you a secure sign-in link. Open that email and tap the link to sign in.</p>
-<label>Email</label><input id="email" type="email" autocomplete="email" value="absahnazcarefoundationorg@gmail.com">
+<p class="muted">Enter your foundation email. We will send you a secure sign-in link.</p>
+<label>Email</label>
+<input id="email" type="email" autocomplete="email" value="absahnazcarefoundationorg@gmail.com">
 <button id="sendCode">Send sign-in link</button>
-
 <div id="loginStatus" class="status" aria-live="polite">You must sign in to access records.</div>
 </section>
 
 <section id="app" class="hidden">
-<div class="card"><b>Signed in:</b> <span id="signedEmail"></span><button id="signOut" class="secondary" style="float:right;margin-top:0">Sign out</button><p class="muted">Records are stored in Supabase and protected by your database row-level security policies.</p></div>
 
-<div class="card"><h2>1. Beneficiaries / students</h2>
+<div class="card">
+<b>Signed in:</b> <span id="signedEmail"></span>
+<button id="signOut" class="secondary" style="float:right;margin-top:0">Sign out</button>
+<p class="muted">Records are stored in Supabase and protected by database security policies.</p>
+</div>
+
+<div class="card">
+<h2>1. Beneficiaries / students</h2>
 <label>Full name *</label><input id="b_name">
-<div class="grid"><div><label>Age</label><input id="b_age" type="number" min="0" max="120"></div><div><label>Gender</label><select id="b_gender"><option value="">Not specified</option><option>Female</option><option>Male</option><option>Other</option></select></div></div>
+<div class="grid">
+<div><label>Age</label><input id="b_age" type="number" min="0" max="120"></div>
+<div>
+<label>Gender</label>
+<select id="b_gender">
+<option value="">Not specified</option>
+<option>Female</option><option>Male</option><option>Other</option>
+</select>
+</div>
+</div>
 <label>General location (LGA / ward only)</label><input id="b_location" placeholder="e.g. Damaturu LGA">
-<label>Support type</label><select id="b_support"><option>Educational support</option><option>School materials</option><option>Child welfare</option><option>Other</option></select>
+<label>Support type</label>
+<select id="b_support">
+<option>Educational support</option>
+<option>School materials</option>
+<option>Child welfare</option>
+<option>Other</option>
+</select>
 <label>Notes (avoid sensitive personal details)</label><textarea id="b_notes"></textarea>
-<button id="addB">Save beneficiary</button><div id="b_list"></div></div>
+<button id="addB">Save beneficiary</button>
+<div id="b_list"></div>
+</div>
 
-<div class="card"><h2>2. Members</h2>
-<label>Full name *</label><input id="m_name"><div class="grid"><div><label>Role</label><select id="m_role"><option>Volunteer</option><option>Member</option><option>Staff</option></select></div><div><label>General location</label><input id="m_location"></div></div>
-<label>Phone (only if necessary)</label><input id="m_phone" type="tel"><button id="addM">Save member</button><div id="m_list"></div></div>
+<div class="card">
+<h2>2. Members</h2>
+<label>Full name *</label><input id="m_name">
+<div class="grid">
+<div><label>Role</label><select id="m_role"><option>Volunteer</option><option>Member</option><option>Staff</option></select></div>
+<div><label>General location</label><input id="m_location"></div>
+</div>
+<label>Phone (only if necessary)</label><input id="m_phone" type="tel">
+<button id="addM">Save member</button>
+<div id="m_list"></div>
+</div>
 
-<div class="card"><h2>3. Donations</h2>
-<label>Donor name</label><input id="d_name"><label>Amount (₦) *</label><input id="d_amount" type="number" min="0.01" step="0.01">
-<label>Purpose</label><input id="d_purpose" placeholder="Books, uniforms, general fund..."><label>Date</label><input id="d_date" type="date"><label>Notes</label><textarea id="d_notes"></textarea>
-<button id="addD">Save donation</button><div id="d_list"></div></div>
+<div class="card">
+<h2>3. Donations</h2>
+<label>Donor name</label><input id="d_name">
+<label>Amount (₦) *</label><input id="d_amount" type="number" min="0.01" step="0.01">
+<label>Purpose</label><input id="d_purpose" placeholder="Books, uniforms, general fund...">
+<label>Date</label><input id="d_date" type="date">
+<label>Notes</label><textarea id="d_notes"></textarea>
+<button id="addD">Save donation</button>
+<div id="d_list"></div>
+</div>
 
-<div class="card"><h2>4. Expenses</h2>
+<div class="card">
+<h2>4. Expenses</h2>
 <label>Beneficiary</label><select id="e_beneficiary"><option value="">Not linked to a beneficiary</option></select>
-<label>Beneficiary name (if not selected above)</label><input id="e_name"><label>Amount (₦) *</label><input id="e_amount" type="number" min="0.01" step="0.01">
-<label>Purpose *</label><input id="e_purpose" placeholder="Uniform, books, transport..."><label>Date</label><input id="e_date" type="date"><label>Notes</label><textarea id="e_notes"></textarea>
-<button id="addE">Save expense</button><div id="e_list"></div></div>
-  <div class="card">
-  <h2>5. Beneficiary Recommendations</h2>
-  <p class="muted">Recommendations submitted by teachers and community members.</p>
-  <div id="r_list"><p class="muted">Loading recommendations…</p></div>
+<label>Beneficiary name (if not selected above)</label><input id="e_name">
+<label>Amount (₦) *</label><input id="e_amount" type="number" min="0.01" step="0.01">
+<label>Purpose *</label><input id="e_purpose" placeholder="Uniform, books, transport...">
+<label>Date</label><input id="e_date" type="date">
+<label>Notes</label><textarea id="e_notes"></textarea>
+<button id="addE">Save expense</button>
+<div id="e_list"></div>
 </div>
-  <div class="card">
-  <h2>6. Membership Applications</h2>
-  <p class="muted">Review membership applications submitted through the foundation website.</p>
-  <div id="membership_list">
-    <p class="muted">Loading membership applications…</p>
-  </div>
+
+<div class="card">
+<h2>5. Beneficiary Recommendations</h2>
+<p class="muted">Review recommendations privately. Verify information and guardian permission before registering a child.</p>
+<div id="r_list"><p class="muted">Loading recommendations…</p></div>
 </div>
-<div class="card"><h2>Financial summary</h2><p id="summary">Loading…</p></div>
+
+<div class="card">
+<h2>6. Membership Applications</h2>
+<p class="muted">Review membership applications submitted through the foundation website.</p>
+<div id="membership_list"><p class="muted">Loading membership applications…</p></div>
+</div>
+
+<div class="card">
+<h2>Financial summary</h2>
+<p id="summary">Loading…</p>
+</div>
+
 </section>
-<div class="muted" style="text-align:center;padding:15px">Keep children's information to the minimum necessary. Do not enter NINs, exact home addresses, or unnecessary sensitive details.</div>
+
+<div class="muted" style="text-align:center;padding:15px">
+Keep children's information to the minimum necessary. Do not enter NINs, exact home addresses, or unnecessary sensitive details.
+</div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://jcuthrjugplncaufeyaq.supabase.co';
 const SUPABASE_KEY='sb_publishable_pygFCjL9VqpNennTT0WEzA_uFZL0dt3';
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
-const today=new Date().toISOString().slice(0,10);$('d_date').value=today;$('e_date').value=today; function msg(t){$('loginStatus').textContent=t}
+const today=new Date().toISOString().slice(0,10);
+$('d_date').value=today;
+$('e_date').value=today;
+
+function msg(t){$('loginStatus').textContent=t}
 
 $('sendCode').onclick=async()=>{
-  const email=$('email').value.trim();
-
-  if(!email){
-    msg('Enter your email address.');
-    return;
+ const email=$('email').value.trim();
+ if(!email){msg('Enter your email address.');return}
+ $('sendCode').disabled=true;
+ msg('Sending sign-in link…');
+ const {error}=await db.auth.signInWithOtp({
+  email,
+  options:{
+   shouldCreateUser:false,
+   emailRedirectTo:'https://absahnazcarefoundation.github.io/admin.html'
   }
-
-  $('sendCode').disabled=true;
-  msg('Sending sign-in link…');
-
-  const {error}=await db.auth.signInWithOtp({
-    email,
-    options:{
-      shouldCreateUser:false,
-      emailRedirectTo:'https://absahnazcarefoundation.github.io/admin.html'
-    }
-  });
-
-  $('sendCode').disabled=false;
-
-  if(error){
-    msg(error.message);
-    return;
-  }
-
-  msg('Check your inbox and tap the sign-in link. You will return here automatically.');
+ });
+ $('sendCode').disabled=false;
+ if(error){msg(error.message);return}
+ msg('Check your inbox and tap the sign-in link.');
 };
-$('signOut').onclick=async()=>{await db.auth.signOut();$('app').classList.add('hidden');$('login').classList.remove('hidden');msg('You have signed out.')};
-async function showApp(){const {data:{user}}=await db.auth.getUser();if(!user)return;$('signedEmail').textContent=user.email;$('login').classList.add('hidden');$('app').classList.remove('hidden');await loadAll()}
-async function fetchTable(table,order='created_at'){const {data,error}=await db.from(table).select('*').order(order,{ascending:false});if(error)throw error;return data||[]}
-function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function listRows(target,rows,format,table){$(target).innerHTML=rows.length?rows.map(r=>`<div class="row">${format(r)}<br><button class="danger" data-delete="${table}" data-id="${r.id}">Delete</button></div>`).join(''):'<p class="muted">No records yet.</p>'}
-let beneficiaries=[],donations=[],expenses=[],members=[];
-  let membershipApplications=[];
-async function loadAll(){try{const recommendations=await fetchTable('beneficiary_recommendations');
-membershipApplications=await fetchTable('membership_applications');
-[beneficiaries,members,donations,expenses]=await Promise.all([fetchTable('beneficiaries'),fetchTable('members'),fetchTable('donations','donation_date'),fetchTable('expenses','expense_date')]);
-$('r_list').innerHTML=recommendations.length?recommendations.map(r=>`
-<div class="row">
-<b>${safe(r.recommender_name)}</b> · ${safe(r.recommender_role)}<br>
-Phone: ${safe(r.recommender_phone)}<br>
-School/Community: ${safe(r.school_community)}<br>
-Location: ${safe(r.location)}<br>
-Child age: ${safe(r.child_age_range)}<br>
-School status: ${safe(r.school_status)}<br>
-Assistance: ${safe(r.assistance_needed)}<br>
-Guardian permission: ${safe(r.guardian_permission)}<br>
-Reason: ${safe(r.reason)}
-</div>`).join(''):'<p class="muted">No recommendations received yet.</p>';
-                             $('membership_list').innerHTML=membershipApplications.length?membershipApplications.map(r=>`
-<div class="row">
-<b>${safe(r.full_name)}</b><br>
-Phone: ${safe(r.phone)}<br>
-Email: ${safe(r.email)}<br>
-Location: ${safe(r.location)}<br>
-Reason for joining: ${safe(r.motivation)}<br>
-Proposed contribution: ${safe(r.contribution)}<br>
-Mission support: ${safe(r.mission_support)}<br>
-Rules agreement: ${safe(r.rules_agreement)}<br>
-Assessment score: ${safe(r.score)} / 100<br>
-Status: <b>${safe(r.status)}</b><br>
-${!['approved','declined'].includes(r.status) ? '<button data-review="approve" data-id="' + safe(r.id) + '">Approve</button> <button class="danger" data-review="decline" data-id="' + safe(r.id) + '">Decline</button>' : ''}
-</div>`).join(''):'<p class="muted">No membership applications received yet.</p>';
-listRows('b_list',beneficiaries,r=>`<b>${safe(r.beneficiary_name)}</b> · ${safe(r.support_type)} · ${safe(r.location)}`,'beneficiaries');
-listRows('m_list',members,r=>`<b>${safe(r.full_name)}</b> · ${safe(r.role)} · ${safe(r.location)} · ${safe(r.phone)}`,'members');
-listRows('d_list',donations,r=>`<b>${safe(r.donor_name||'Anonymous')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.donation_date)}`,'donations');
-listRows('e_list',expenses,r=>`<b>${safe(r.beneficiary_name||'General')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.expense_date)}`,'expenses');
-$('e_beneficiary').innerHTML='<option value="">Not linked to a beneficiary</option>'+beneficiaries.map(b=>`<option value="${safe(b.id)}">${safe(b.beneficiary_name)}</option>`).join('');
-const d=donations.reduce((s,r)=>s+Number(r.amount),0),e=expenses.reduce((s,r)=>s+Number(r.amount),0);
-$('summary').textContent=`Beneficiaries: ${beneficiaries.length} | Members: ${members.length}\nTotal donations: ₦${d.toLocaleString()}\nTotal expenses: ₦${e.toLocaleString()}\nBalance: ₦${(d-e).toLocaleString()}`;
-}catch(err){alert('Could not load records: '+err.message+' Check table permissions and RLS policies.');}}
-async function insert(table,row){const {error}=await db.from(table).insert(row);if(error){alert('Save failed: '+error.message);return false}await loadAll();return true}
-$('addB').onclick=async()=>{let name=$('b_name').value.trim();if(!name){alert('Enter beneficiary name.');return}if(await insert('beneficiaries',{beneficiary_name:name,age:$('b_age').value?Number($('b_age').value):null,gender:$('b_gender').value||null,location:$('b_location').value.trim()||null,support_type:$('b_support').value,notes:$('b_notes').value.trim()||null})){['b_name','b_age','b_location','b_notes'].forEach(id=>$(id).value='')}};
-$('addM').onclick=async()=>{let name=$('m_name').value.trim();if(!name){alert('Enter member name.');return}if(await insert('members',{full_name:name,role:$('m_role').value,location:$('m_location').value.trim()||null,phone:$('m_phone').value.trim()||null})){['m_name','m_location','m_phone'].forEach(id=>$(id).value='')}};
-$('addD').onclick=async()=>{let amount=Number($('d_amount').value);if(!(amount>0)){alert('Enter a valid amount.');return}if(await insert('donations',{donor_name:$('d_name').value.trim()||null,amount,purpose:$('d_purpose').value.trim()||null,donation_date:$('d_date').value||today,notes:$('d_notes').value.trim()||null})){['d_name','d_amount','d_notes'].forEach(id=>$(id).value='')}};
-$('addE').onclick=async()=>{let amount=Number($('e_amount').value),purpose=$('e_purpose').value.trim();if(!(amount>0)||!purpose){alert('Enter a valid amount and purpose.');return}let selected=beneficiaries.find(b=>b.id===$('e_beneficiary').value);if(await insert('expenses',{beneficiary_name:selected?.beneficiary_name||$('e_name').value.trim()||null,amount,purpose,expense_date:$('e_date').value||today,notes:$('e_notes').value.trim()||null})){['e_name','e_amount','e_purpose','e_notes'].forEach(id=>$(id).value='');$('e_beneficiary').value=''}};
-document.addEventListener('click',async ev=>{const b=ev.target.closest('[data-delete]');if(!b)return;if(!confirm('Delete this record permanently?'))return;const {error}=await db.from(b.dataset.delete).delete().eq('id',b.dataset.id);if(error){alert('Delete failed: '+error.message);return}await loadAll()});
-  document.addEventListener('click', async ev => {
-  const button = ev.target.closest('[data-review]');
-  if (!button) return;
 
-  const decision = button.dataset.review;
-  const applicationId = Number(button.dataset.id);
+$('signOut').onclick=async()=>{
+ await db.auth.signOut();
+ $('app').classList.add('hidden');
+ $('login').classList.remove('hidden');
+ msg('You have signed out.');
+};
 
-  if (!confirm(`Are you sure you want to ${decision} this application?`)) return;
+async function showApp(){
+ const {data:{user}}=await db.auth.getUser();
+ if(!user)return;
+ $('signedEmail').textContent=user.email;
+ $('login').classList.add('hidden');
+ $('app').classList.remove('hidden');
+ await loadAll();
+}
 
-  button.disabled = true;
+async function fetchTable(table,order='created_at'){
+ const {data,error}=await db.from(table).select('*').order(order,{ascending:false});
+ if(error)throw error;
+ return data||[];
+}
 
-  const { data, error } = await db.rpc('review_membership_application', {
-    application_id: applicationId,
-    decision: decision
-  });
+function safe(v){
+ return String(v??'').replace(/[&<>"']/g,c=>({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
 
-  button.disabled = false;
+function listRows(target,rows,format,table){
+ $(target).innerHTML=rows.length?rows.map(r=>
+  `<div class="row">${format(r)}<br>
+  <button class="danger" data-delete="${table}" data-id="${safe(r.id)}">Delete</button></div>`
+ ).join(''):'<p class="muted">No records yet.</p>';
+}
 
-  if (error) {
-    alert('Review failed: ' + error.message);
-    return;
+let beneficiaries=[],donations=[],expenses=[],members=[],membershipApplications=[],recommendations=[];
+
+function renderRecommendations(){
+ $('r_list').innerHTML=recommendations.length?recommendations.map(r=>`
+ <div class="row">
+  <b>${safe(r.recommendation_ref||'No reference')}</b>
+  <span class="badge ${safe(r.status||'pending')}">${safe(r.status||'pending')}</span>
+  <br><b>${safe(r.recommender_name)}</b> · ${safe(r.recommender_role)}
+  <br>School/community: ${safe(r.school_community)}
+  <br>Location: ${safe(r.location)}
+  <br>Child age range: ${safe(r.child_age_range)}
+  <br>Assistance: ${safe(r.assistance_needed)}
+  <br>Guardian permission: ${safe(r.guardian_permission)}
+  <div>
+   <button class="secondary" data-details="${safe(r.id)}">View Details</button>
+   ${r.status!=='approved'&&r.status!=='declined'&& !r.beneficiary_id ? `
+    <button class="secondary" data-action="request_verification" data-id="${safe(r.id)}">Request Verification</button>
+    <button class="success" data-action="verify" data-id="${safe(r.id)}">Mark as Verified</button>
+    <button data-action="approve" data-id="${safe(r.id)}" ${r.status!=='verified'?'disabled title="Verify first"':''}>Approve & Register</button>
+    <button class="danger" data-action="decline" data-id="${safe(r.id)}">Decline</button>
+   `:''}
+  </div>
+  <div id="details-${safe(r.id)}" class="details hidden">
+   <b>Recommender phone:</b> ${safe(r.recommender_phone)}<br>
+   <b>School/community:</b> ${safe(r.school_community)}<br>
+   <b>Location:</b> ${safe(r.location)}<br>
+   <b>Child reference:</b> ${safe(r.child_reference)}<br>
+   <b>Child age range:</b> ${safe(r.child_age_range)}<br>
+   <b>School status:</b> ${safe(r.school_status)}<br>
+   <b>Assistance needed:</b> ${safe(r.assistance_needed)}<br>
+   <b>Guardian permission:</b> ${safe(r.guardian_permission)}<br>
+   <b>Reason:</b> ${safe(r.reason)}<br>
+   <b>Decision notes:</b> ${safe(r.decision_reason)}<br>
+   <b>Submitted:</b> ${safe(r.created_at)}
+  </div>
+ </div>`).join(''):'<p class="muted">No recommendations received yet.</p>';
+}
+
+async function loadAll(){
+ try{
+  recommendations=await fetchTable('beneficiary_recommendations');
+  membershipApplications=await fetchTable('membership_applications');
+
+  [beneficiaries,members,donations,expenses]=await Promise.all([
+   fetchTable('beneficiaries'),
+   fetchTable('members'),
+   fetchTable('donations','donation_date'),
+   fetchTable('expenses','expense_date')
+  ]);
+
+  renderRecommendations();
+
+  $('membership_list').innerHTML=membershipApplications.length?membershipApplications.map(r=>`
+   <div class="row">
+    <b>${safe(r.full_name)}</b><br>
+    Phone: ${safe(r.phone)}<br>
+    Email: ${safe(r.email)}<br>
+    Location: ${safe(r.location)}<br>
+    Reason for joining: ${safe(r.motivation)}<br>
+    Proposed contribution: ${safe(r.contribution)}<br>
+    Mission support: ${safe(r.mission_support)}<br>
+    Rules agreement: ${safe(r.rules_agreement)}<br>
+    Assessment score: ${safe(r.score)} / 100<br>
+    Status: <b>${safe(r.status)}</b><br>
+    ${!['approved','declined'].includes(r.status)?`
+     <button data-review="approve" data-id="${safe(r.id)}">Approve</button>
+     <button class="danger" data-review="decline" data-id="${safe(r.id)}">Decline</button>
+    `:''}
+   </div>`).join(''):'<p class="muted">No membership applications received yet.</p>';
+
+  listRows('b_list',beneficiaries,r=>`<b>${safe(r.beneficiary_name)}</b> · ${safe(r.support_type)} · ${safe(r.location)}`,'beneficiaries');
+  listRows('m_list',members,r=>`<b>${safe(r.full_name)}</b> · ${safe(r.role)} · ${safe(r.location)} · ${safe(r.phone)}`,'members');
+  listRows('d_list',donations,r=>`<b>${safe(r.donor_name||'Anonymous')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.donation_date)}`,'donations');
+  listRows('e_list',expenses,r=>`<b>${safe(r.beneficiary_name||'General')}</b> · ₦${Number(r.amount).toLocaleString()} · ${safe(r.purpose)} · ${safe(r.expense_date)}`,'expenses');
+
+  $('e_beneficiary').innerHTML='<option value="">Not linked to a beneficiary</option>'+beneficiaries.map(b=>`<option value="${safe(b.id)}">${safe(b.beneficiary_name)}</option>`).join('');
+
+  const d=donations.reduce((s,r)=>s+Number(r.amount),0);
+  const e=expenses.reduce((s,r)=>s+Number(r.amount),0);
+  $('summary').textContent=`Beneficiaries: ${beneficiaries.length} | Members: ${members.length}\nTotal donations: ₦${d.toLocaleString()}\nTotal expenses: ₦${e.toLocaleString()}\nBalance: ₦${(d-e).toLocaleString()}`;
+
+ }catch(err){
+  alert('Could not load records: '+err.message+' Check table permissions and RLS policies.');
+ }
+}
+
+async function insert(table,row){
+ const {error}=await db.from(table).insert(row);
+ if(error){alert('Save failed: '+error.message);return false}
+ await loadAll();
+ return true;
+}
+
+$('addB').onclick=async()=>{
+ let name=$('b_name').value.trim();
+ if(!name){alert('Enter beneficiary name.');return}
+ if(await insert('beneficiaries',{
+  beneficiary_name:name,
+  age:$('b_age').value?Number($('b_age').value):null,
+  gender:$('b_gender').value||null,
+  location:$('b_location').value.trim()||null,
+  support_type:$('b_support').value,
+  notes:$('b_notes').value.trim()||null
+ })){
+  ['b_name','b_age','b_location','b_notes'].forEach(id=>$(id).value='');
+ }
+};
+
+$('addM').onclick=async()=>{
+ let name=$('m_name').value.trim();
+ if(!name){alert('Enter member name.');return}
+ if(await insert('members',{
+  full_name:name,role:$('m_role').value,
+  location:$('m_location').value.trim()||null,
+  phone:$('m_phone').value.trim()||null
+ })){
+  ['m_name','m_location','m_phone'].forEach(id=>$(id).value='');
+ }
+};
+
+$('addD').onclick=async()=>{
+ let amount=Number($('d_amount').value);
+ if(!(amount>0)){alert('Enter a valid amount.');return}
+ if(await insert('donations',{
+  donor_name:$('d_name').value.trim()||null,
+  amount,
+  purpose:$('d_purpose').value.trim()||null,
+  donation_date:$('d_date').value||today,
+  notes:$('d_notes').value.trim()||null
+ })){
+  ['d_name','d_amount','d_notes'].forEach(id=>$(id).value='');
+ }
+};
+
+$('addE').onclick=async()=>{
+ let amount=Number($('e_amount').value);
+ let purpose=$('e_purpose').value.trim();
+ if(!(amount>0)||!purpose){alert('Enter a valid amount and purpose.');return}
+ let selected=beneficiaries.find(b=>b.id===$('e_beneficiary').value);
+ if(await insert('expenses',{
+  beneficiary_name:selected?.beneficiary_name||$('e_name').value.trim()||null,
+  amount,purpose,
+  expense_date:$('e_date').value||today,
+  notes:$('e_notes').value.trim()||null
+ })){
+  ['e_name','e_amount','e_purpose','e_notes'].forEach(id=>$(id).value='');
+  $('e_beneficiary').value='';
+ }
+};
+
+async function reviewRecommendation(id,decision){
+ const reason=prompt(
+  decision==='decline'?'Enter the reason for declining:':
+  decision==='request_verification'?'What needs to be verified?':
+  'Optional verification notes:',
+  ''
+ );
+ if(reason===null)return;
+ if(decision==='decline'&&!reason.trim()){
+  alert('Please enter a reason for declining.');
+  return;
+ }
+ const {data,error}=await db.rpc('review_beneficiary_recommendation',{
+  p_recommendation_id:Number(id),
+  p_decision:decision,
+  p_reason:reason.trim()||null
+ });
+ if(error){alert('Action failed: '+error.message);return}
+ alert(data);
+ await loadAll();
+}
+
+async function approveRecommendation(id){
+ const r=recommendations.find(x=>String(x.id)===String(id));
+ if(!r)return;
+ if(r.status!=='verified'){
+  alert('Please verify this recommendation first.');
+  return;
+ }
+ const name=prompt('Enter the child’s full name privately, after guardian consent:');
+ if(!name||!name.trim())return;
+ const ageText=prompt('Enter the child’s exact age in years (optional). Leave blank if unknown:','');
+ if(ageText===null)return;
+ let age=null;
+ if(ageText.trim()!==''){
+  age=Number(ageText);
+  if(!Number.isInteger(age)||age<0||age>120){
+   alert('Enter a valid age in years.');
+   return;
   }
+ }
+ const gender=prompt('Enter gender (Female, Male, Other), or leave blank:','');
+ if(gender===null)return;
+ const location=prompt('Enter general location (LGA / ward only):',r.location||'');
+ if(location===null)return;
+ const notes=prompt('Enter any brief non-sensitive registration notes:','');
+ if(notes===null)return;
+ const support=r.assistance_needed||'Educational support';
+ if(!confirm('Register this child as a beneficiary and approve recommendation '+(r.recommendation_ref||id)+'?'))return;
 
+ const {data,error}=await db.rpc('approve_and_register_beneficiary',{
+  p_recommendation_id:Number(id),
+  p_beneficiary_name:name.trim(),
+  p_age:age,
+  p_gender:gender.trim()||null,
+  p_location:location.trim()||null,
+  p_support_type:support,
+  p_notes:notes.trim()||null
+ });
+ if(error){alert('Registration failed: '+error.message);return}
+ alert('Beneficiary registered successfully.\n\nBeneficiary ID: '+data);
+ await loadAll();
+}
+
+document.addEventListener('click',async ev=>{
+ const detail=ev.target.closest('[data-details]');
+ if(detail){
+  const panel=$('details-'+detail.dataset.details);
+  if(panel)panel.classList.toggle('hidden');
+  return;
+ }
+
+ const action=ev.target.closest('[data-action]');
+ if(action){
+  const id=action.dataset.id;
+  if(action.dataset.action==='approve'){
+   await approveRecommendation(id);
+  }else{
+   await reviewRecommendation(id,action.dataset.action);
+  }
+  return;
+ }
+
+ const del=ev.target.closest('[data-delete]');
+ if(del){
+  if(!confirm('Delete this record permanently?'))return;
+  const {error}=await db.from(del.dataset.delete).delete().eq('id',del.dataset.id);
+  if(error){alert('Delete failed: '+error.message);return}
+  await loadAll();
+  return;
+ }
+
+ const membership=ev.target.closest('[data-review]');
+ if(membership){
+  const decision=membership.dataset.review;
+  const applicationId=Number(membership.dataset.id);
+  if(!confirm(`Are you sure you want to ${decision} this application?`))return;
+  membership.disabled=true;
+  const {data,error}=await db.rpc('review_membership_application',{
+   application_id:applicationId,
+   decision:decision
+  });
+  membership.disabled=false;
+  if(error){alert('Review failed: '+error.message);return}
   alert(data);
   await loadAll();
+ }
 });
-db.auth.onAuthStateChange((_event,session)=>{if(session)showApp()});
-(async()=>{const {data:{session}}=await db.auth.getSession();if(session)await showApp()})();
-</script></body></html>
+
+db.auth.onAuthStateChange((_event,session)=>{
+ if(session)showApp();
+});
+
+(async()=>{
+ const {data:{session}}=await db.auth.getSession();
+ if(session)await showApp();
+})();
+</script>
+</body>
+</html>
