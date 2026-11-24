@@ -173,8 +173,14 @@ form.addEventListener('submit', async function(event) {
             .insert([application]);
 
         if (error) {
-            throw error;
-        }
+    if (error.message.includes('already been used')) {
+        throw new Error(
+            'This phone number is already associated with a membership application. Please contact the foundation if you need assistance.'
+        );
+    }
+
+    throw error;
+}
 
         result.style.color = 'green';
         result.textContent =
